@@ -23,7 +23,7 @@ export default function Home() {
             />
           </div>
           <p className="mt-6 text-sm text-gray-600">
-            Bienvenue sur le projet Circum pour l'Ile-de-France!
+            Bienvenue sur le projet Circum pour Ile-de-France!
             <br />
             Nous construisons de meilleures cartes 3D en rémunérant les
             entreprises et les citoyens qui partagent des données. Découvre-en
