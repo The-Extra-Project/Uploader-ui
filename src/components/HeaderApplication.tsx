@@ -9,12 +9,7 @@ import extra from "@/app/public/extra_logo.png"
 import {ArrowDownward} from "@mui/icons-material"
 
 
-
-
-
-
-export  function HeaderApplication() {
-
+export default function HeaderApplication() {
     return (
     <header className="flex items-center justify-between bg-green-100 px-4 py-3 text-white md:px-6">
     <Link href="page" className="flex items-center">        
@@ -23,17 +18,21 @@ export  function HeaderApplication() {
     <Image src={idf} height={100} width={100} alt="IDF"></Image>
     <DropdownMenu>
             <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="flex items-center gap-2 lm ">
+            <Button variant="outline" className="flex items-center gap-2 lm ">
             <Avatar className="h-8 w-8">
                 <Image src={extra} alt="User Avatar" />
                 <AvatarFallback >DM</AvatarFallback>
             </Avatar>    
-            <span className="text-sm font-medium">Dhruv Malik</span>
+            <span className="text-sm font-medium text-black">Dhruv Malik</span>
             <ArrowDownward />
             </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="text-black">
-            <DropdownMenuItem > Profile </DropdownMenuItem>
+            <DropdownMenuItem  > 
+            <Link href="/app/dashboard-user">
+        Profile
+    </Link>
+         </DropdownMenuItem>
             <DropdownMenuItem > Settings  </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem> Logout </DropdownMenuItem>

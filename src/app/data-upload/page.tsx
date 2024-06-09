@@ -6,7 +6,7 @@ import { Card } from "@/components/Card"
 import {Button} from "@/components/ButtonShadcn"
 import React, {useState} from "react"
 import { UploadFile} from "@mui/icons-material"
-import {HeaderApplication} from "@/components/HeaderApplication"
+import HeaderApplication from "@/components/HeaderApplication"
 
 export default function Dashboard() {
     const [uploadedFiles, setUploadedFiles] = useState([]);
