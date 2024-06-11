@@ -11,7 +11,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
-    "@hookform/resolvers": "^3.4.2",
+    "@hookform/resolvers": "^3.6.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
     "@mui/material": "^5.15.19",
     "@next-auth/supabase-adapter": "^0.2.1",
@@ -42,6 +42,7 @@
     "prettier": "^3.3.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.51.5",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
