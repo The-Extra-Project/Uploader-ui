@@ -3,7 +3,6 @@ import { PrismaClient, Prisma } from '@prisma/client'
 
 
 export const prismaCLient = new PrismaClient()
-
 declare global {
     // eslint-disable-next-line no-var
     var cachedDBClient: SupabaseClient
@@ -12,6 +11,7 @@ declare global {
 export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "" )
 
 let supClient: SupabaseClient
+
 if (process.env.NODE_ENV === "production") {
     supClient = new SupabaseClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL || "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""

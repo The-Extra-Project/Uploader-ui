@@ -2,13 +2,14 @@ import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 import { buttonVariants } from "@/components/ButtonShadcn"
-import { Icons } from "@/components/Icons"
+import Image  from "next/image"
 import { UserAuthForm } from "@/components/AuthForm"
-
-
-
+import extra from "@/app/public/extra_logo.png"
+import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
+import { siteConfig } from "@/config/config-website"
 export const metadata = {
-    title: "Create an account",
+    title: "Creer Nouveau compte chez Extralabs",
     description: "Create an account to get started.",
   }
   
@@ -28,30 +29,35 @@ export const metadata = {
         <div className="lg:p-8">
           <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
-              <Icons.logo className="mx-auto h-6 w-6" />
+              
+              <Image src={extra} height={100} width={100} style={{alignItems:'center'}} alt="IDF"></Image>
               <h1 className="text-2xl font-semibold tracking-tight">
-                Create an account
+                Creer votre compte chez extralabs
               </h1>
               <p className="text-sm text-muted-foreground">
-                Enter your email below to create your account
+              Selectionne votre type de compte
+              <RadioGroup defaultValue="user">
+              <div className="flex items-center text-small space-x-2">
+                <RadioGroupItem value="user" id="option-one" />
+                    <Label htmlFor="option-one"> User Account</Label>
+              </div>
+
+              <div className="flex items-center text-small space-x-2">
+                <RadioGroupItem value="admin" id="option-one" />
+                    <Label htmlFor="option-one"> Data-admin</Label>
+              </div>
+              </RadioGroup>
               </p>
             </div>
             <UserAuthForm />
             <p className="px-8 text-center text-sm text-muted-foreground">
-              By clicking continue, you agree to our{" "}
+              En cliquant, vous acceptez automatiquement les C.G.V mentionnant danes le lien{" "}
               <Link
-                href="/terms"
+                href={siteConfig.tos}
                 className="hover:text-brand underline underline-offset-4"
               >
-                Terms of Service
-              </Link>{" "}
-              and{" "}
-              <Link
-                href="/"
-                className="hover:text-brand underline underline-offset-4"
-              >
-                Privacy Policy
-              </Link>
+                ici
+              </Link>              
               .
             </p>
           </div>

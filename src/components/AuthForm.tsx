@@ -12,7 +12,7 @@ import { userAuthSchema } from "@/lib/auth-validation"
 import { Label } from "@/components/Label"
 import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/Icons"
-
+import { PasswordInput } from "@/components/password-input"
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 
 type FormData = z.infer<typeof userAuthSchema>
@@ -26,6 +26,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(userAuthSchema),
   })
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [currentPassword, setCurrentPassword] = React.useState("")
   const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
   const searchParams = useSearchParams()
 
@@ -50,7 +51,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     return toast({
       title: "Check your email",
-      description: "We sent you a login link. Be sure to check your spam too.",
+      description: "We sent you the confirmation of account activation, check it in your inbox.",
     })
   }
 
@@ -72,6 +73,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               disabled={isLoading || isGitHubLoading}
               {...register("email")}
             />
+
+        <Label htmlFor="current_password">Current Password</Label>
+				    <PasswordInput
+                id="current_password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                autoComplete="current-password"
+				/>
+
             {errors?.email && (
               <p className="px-1 text-xs text-red-600">
                 {errors.email.message}
@@ -82,7 +92,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Sign In with Email
+            Signez vous avec email et mot de passe
           </button>
         </div>
       </form>

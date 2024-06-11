@@ -3,12 +3,11 @@
 import Link from "next/link"
 import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
 import { Card } from "@/components/Card"
-import {Button} from "@/components/ButtonShadcn"
+import {Button} from "@/components/ui/button"
 import React, {useState} from "react"
 import { UploadFile} from "@mui/icons-material"
 import HeaderApplication from "@/components/HeaderApplication"
-
-export default function Dashboard() {
+export default function UploadPage() {
     const [uploadedFiles, setUploadedFiles] = useState([]);
     const [uploadProgress, setUploadProgress] = useState({});
     
@@ -29,14 +28,12 @@ export default function Dashboard() {
             <br />
             <h4 className="mt-2 text-gray-500 dark:text-gray-400"> Compatible formats: image (.jpeg), video (.mp4, .360), point clouds (.las, .laz) or polygon (.ply)</h4>
         </div>
-
         </div>
         </div>
         <Button size="lg">Upload</Button>
         </Card>
         </main>
         </React.Fragment>
-
     )
 
 
