@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
-import { siteConfig } from "@/siteconfig";
+import { siteConfig } from "@/config/config-website";
 import { cn } from "@/lib/utils";
 
 import { Toaster } from "@/components/ui/toaster";

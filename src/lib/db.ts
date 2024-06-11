@@ -1,5 +1,9 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js";  
-import {  createClientServer } from "@/lib/supabase-ssr"
+import { PrismaClient, Prisma } from '@prisma/client'
+
+
+export const prismaCLient = new PrismaClient()
+
 declare global {
     // eslint-disable-next-line no-var
     var cachedDBClient: SupabaseClient

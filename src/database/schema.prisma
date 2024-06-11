@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model UserProfile {
+  id               Int              @id @default(autoincrement())
+  user             User             @relation(fields: [userId], references: [id])
+  userId           Int
+  walletAddress    String           @default("0xdemo")
+  storageType      Storage          @relation(fields: [storageTypeId], references: [id])
+  storageTypeId    Int
+  walletSupply     TokensAlloted    @relation(fields: [walletSupplyId], references: [id])
+  walletSupplyId   Int
+  deleting         Boolean          @default(false)
+  createdAt        DateTime         @default(now())
+  emailStatus      EmailTransferred @default(INTRO)
+  description_user String
+  filesOwned       File[]
+}
+
+model User {
+  id          Int    @id @default(autoincrement())
+  username    String @unique
+  passwordEnc String
+
+  UserProfile UserProfile[]
+}
+
+model Storage {
+  id              Int           @id @default(autoincrement())
+  storageCategory String        @default("web3Storage")
+  filesDir        String        @default("")
+  UserProfile     UserProfile[]
+  File            File[]
+}
+
+model TokensAlloted {
+  id            Int           @id @default(autoincrement())
+  supplyAlloted BigInt        @default(0)
+  UserProfile   UserProfile[]
+}
+
+enum EmailTransferred {
+  INTRO
+  UPLOADED
+  RESULT
+}
+
+enum PaymentState {
+  PENDING
+  REIMBURSED
+  REJECTED
+  REMOVED
+}
+
+model File {
+  id            String       @id @unique @default(uuid())
+  fileCids      String
+  storageType   Storage      @relation(fields: [storageTypeId], references: [id])
+  storageTypeId Int
+  reimbursed    Boolean      @default(false)
+  userOwner     UserProfile  @relation(fields: [userProfileId], references: [id])
+  userOwnerId   Int
+  statePayment  PaymentState @default(PENDING)
+  allotedTokens BigInt       @default(0)
+  userProfileId Int
+}
