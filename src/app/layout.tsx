@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { Toaster } from "@/components/ui/toaster";
 
  import {ThemeProvider} from "@/components/theme-provider"
+ import {AuthProvider} from "@/components/auth-provider"
+ import {auth} from "@/lib/auth"
 
 
 const inter = Inter(
@@ -28,16 +30,17 @@ export const metadata = {
   description: siteConfig.description,
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
-}>) 
-{
-return (
+  children: React.ReactNode
+}>) {
+  const session = await auth()
+
+  return (
     <html lang="en" suppressHydrationWarning>
       <head/>
-      <body 
+      <body
       className=
       {
         cn(
@@ -46,11 +49,13 @@ return (
         )
       }
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        {children}
+        <AuthProvider session={session}>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            {children}
         <Toaster>
         </Toaster>
-        </ThemeProvider>
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );
