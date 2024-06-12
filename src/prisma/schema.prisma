@@ -1,40 +1,36 @@
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")
 }
-
 model UserProfile {
   id               Int              @id @default(autoincrement())
   user             User             @relation(fields: [userId], references: [id])
   userId           Int
   walletAddress    String           @default("0xdemo")
-  storageType      Storage          @relation(fields: [storageTypeId], references: [id])
-  storageTypeId    Int
+  storageType      Storage          @relation(fields: [storageIds], references: [filesDir])
+  storageIds       String
   walletSupply     TokensAlloted    @relation(fields: [walletSupplyId], references: [id])
   walletSupplyId   Int
-  deleting         Boolean          @default(false)
   createdAt        DateTime         @default(now())
   emailStatus      EmailTransferred @default(INTRO)
   description_user String
   filesOwned       File[]
 }
-
 model User {
   id          Int    @id @default(autoincrement())
   username    String @unique
   passwordEnc String
 
-  UserProfile UserProfile[]
+  UserProfile UserProfile[]  
 }
 
 model Storage {
   id              Int           @id @default(autoincrement())
   storageCategory String        @default("web3Storage")
-  filesDir        String        @default("")
+  filesDir        String        @unique  @default("")
   UserProfile     UserProfile[]
   File            File[]
 }
