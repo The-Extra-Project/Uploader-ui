@@ -1,7 +1,7 @@
 import NextAuth from "next-auth/next";
 import Google from "next-auth/providers/google"
 import EmailProvider  from "next-auth/providers/email";
-import CredentialsProvider from "next-auth/providers/credentials"
+import CredentialsProvider, { CredentialsProviderType } from "next-auth/providers/credentials"
 import GithubProvider from "next-auth/providers/github"
 import { NextAuthOptions } from "next-auth";
 import { SupabaseAdapter } from "@next-auth/supabase-adapter"
@@ -93,8 +93,12 @@ export const authOptions: NextAuthOptions = {
                 email: { label: "Email", type: "text", placeholder: "Email" },
                 password: { label: "Password", type: "password" },
             },
-            authorize: async () => {
-               
+            authorize: async (credentials: any ) => {
+               const userparams = await supabase.auth.signInWithPassword({
+                email: credentials.email,
+                password: credentials.password
+            });
+               return userparams.data || null;
             }
         })
     ],
