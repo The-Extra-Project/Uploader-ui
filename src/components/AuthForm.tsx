@@ -74,13 +74,13 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               {...register("email")}
             />
 
-        <Label htmlFor="current_password">Current Password</Label>
-				    <PasswordInput
-                id="current_password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                autoComplete="current-password"
-				/>
+            <Label htmlFor="current_password">Current Password</Label>
+            <PasswordInput
+              id="current_password"
+              value={currentPassword}
+              onChange={(e) => setCurrentPassword(e.target.value)}
+              autoComplete="current-password"
+            />
 
             {errors?.email && (
               <p className="px-1 text-xs text-red-600">
@@ -111,7 +111,10 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         className={cn(buttonVariants({ variant: "outline" }))}
         onClick={() => {
           setIsGitHubLoading(true)
-          signIn("github")
+          signIn("github", {
+            redirect: true,
+            callbackUrl: "/test",
+          })
         }}
         disabled={isLoading || isGitHubLoading}
       >
