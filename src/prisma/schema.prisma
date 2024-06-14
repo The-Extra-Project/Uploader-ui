@@ -1,44 +1,32 @@
 generator client {
   provider = "prisma-client-js"
 }
+
 datasource db {
   provider = "postgres"
   url      = env("DATABASE_URL")
 }
-model UserProfile {
+
+model User {
   id               Int              @id @default(autoincrement())
-  user             User             @relation(fields: [userId], references: [id])
-  userId           Int
+  username         String           @unique
+  passwordEnc      String
   walletAddress    String           @default("0xdemo")
-  storageType      Storage          @relation(fields: [storageIds], references: [filesDir])
-  storageIds       String
-  walletSupply     TokensAlloted    @relation(fields: [walletSupplyId], references: [id])
-  walletSupplyId   Int
+  walletSupply     Int
   createdAt        DateTime         @default(now())
+  storageArrays    StorageProvider          @relation(fields: [storageIds], references: [filesDir])
+  storageIds       String
   emailStatus      EmailTransferred @default(INTRO)
   description_user String
   filesOwned       File[]
 }
-model User {
-  id          Int    @id @default(autoincrement())
-  username    String @unique
-  passwordEnc String
 
-  UserProfile UserProfile[]  
-}
-
-model Storage {
-  id              Int           @id @default(autoincrement())
-  storageCategory String        @default("web3Storage")
-  filesDir        String        @unique  @default("")
-  UserProfile     UserProfile[]
+model StorageProvider {
+  id              Int    @id @default(autoincrement())
+  storageCategory String @default("web3Storage")
+  filesDir        String @unique @default("")
+  User            User[]
   File            File[]
-}
-
-model TokensAlloted {
-  id            Int           @id @default(autoincrement())
-  supplyAlloted BigInt        @default(0)
-  UserProfile   UserProfile[]
 }
 
 enum EmailTransferred {
@@ -57,10 +45,10 @@ enum PaymentState {
 model File {
   id            String       @id @unique @default(uuid())
   fileCids      String
-  storageType   Storage      @relation(fields: [storageTypeId], references: [id])
+  storageType   StorageProvider      @relation(fields: [storageTypeId], references: [id])
   storageTypeId Int
   reimbursed    Boolean      @default(false)
-  userOwner     UserProfile  @relation(fields: [userProfileId], references: [id])
+  userOwner     User         @relation(fields: [userProfileId], references: [id])
   userOwnerId   Int
   statePayment  PaymentState @default(PENDING)
   allotedTokens BigInt       @default(0)

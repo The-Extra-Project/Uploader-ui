@@ -6,6 +6,8 @@ import type {
 // import { revalidatePath } from "next/cache"
 // import { redirect } from "next/navigation"
 import { SupabaseAdapter } from "@next-auth/supabase-adapter"
+
+const bcrypt = require("bcrypt")
 // import { configDotenv } from "dotenv"
 import type { NextAuthOptions } from "next-auth"
 import { getServerSession } from "next-auth"
@@ -13,13 +15,11 @@ import { getServerSession } from "next-auth"
 // import CredentialsProvider from "next-auth/providers/credentials"
 // import EmailProvider from "next-auth/providers/email"
 import GithubProvider from "next-auth/providers/github"
-
+import CredentialsProvider from "next-auth/providers/credentials";
 import { env } from "@/env.mjs"
-
-// import Google from "next-auth/providers/google"
-
-// import { db, supabase } from "@/lib/db"
-// import { createClientUser } from "@/lib/supabase-client-server"
+import Google from "next-auth/providers/google"
+ import { db, supabase } from "@/lib/db"
+ import {v4 as uuidv4} from 'uuid';// import { createClientUser } from "@/lib/supabase-client-server"
 
 // configDotenv({
 //   path: "../../../.env",
@@ -105,7 +105,7 @@ import { env } from "@/env.mjs"
 
 // You'll need to import and pass this
 // to `NextAuth` in `app/api/auth/[...nextauth]/route.ts`
-export const config = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GithubProvider({
       clientId: env.GITHUB_CLIENT_ID || "",
@@ -117,23 +117,39 @@ export const config = {
     //     email: { label: "Email", type: "text", placeholder: "Email" },
     //     password: { label: "Password", type: "password" },
     //   },
-    // //   authorize: async () => {},
-    // }),
+      // authorize: async (credentials) => {
+      //   // Add logic to authenticate user with credentials
+
+      //   if (!credentials?.email || !credentials?.password) {
+      //     throw new Error("Email or password is missing");
+      //   }
+      //   const user = await db.user.findFirst({
+      //     where: {
+      //       username: credentials.email,
+      //     },
+      //   });
+
+      //   //clear white space from password
+      //   const trimmedPassword = credentials.password.trim();
+      //   if (!user || !user?.passwordEnc) {
+      //     throw new Error("User not found, please register first");
+      //   }
+
+      //   const isCorrectPassword = await bcrypt.compare(
+      //     trimmedPassword,
+      //     user.passwordEnc
+      //   );
+      //   if (!isCorrectPassword) {
+      //     throw new Error("Password is incorrect");
+      //   }
+      //   return user;
+      //     }
+      //  }),
   ],
-
-  // ***********************
-  // this is the code that
-  // is causing the error
-
-  // check this out: https://authjs.dev/getting-started/adapters/supabase
-
-  // adapter: SupabaseAdapter({
-  //   url: env.NEXT_PUBLIC_SUPABASE_URL || "",
-  //   secret: env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
-  // }),
-
-  // ***********************
-
+  adapter: SupabaseAdapter({
+    url: env.NEXT_PUBLIC_SUPABASE_URL || "",
+    secret: env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+  }),
   session: {
     strategy: "jwt",
   },
@@ -141,7 +157,7 @@ export const config = {
     signIn: "/login",
     error: "/error",
   },
-} satisfies NextAuthOptions
+}
 
 // Use it in server contexts
 export function auth(
@@ -150,5 +166,5 @@ export function auth(
     | [NextApiRequest, NextApiResponse]
     | []
 ) {
-  return getServerSession(...args, config)
+  return getServerSession(...args, authOptions)
 }

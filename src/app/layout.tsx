@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+
 import { Inter } from "next/font/google";
 import "./globals.css";
 
@@ -10,8 +10,14 @@ import { Toaster } from "@/components/ui/toaster";
  import {ThemeProvider} from "@/components/theme-provider"
  import {AuthProvider} from "@/components/auth-provider"
  import {auth} from "@/lib/auth"
+import { configDotenv } from "dotenv";
 
 
+configDotenv(
+  {
+    path: ".env",
+  }
+)
 const inter = Inter(
   { 
   subsets: ["latin"],
@@ -35,7 +41,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const session = await auth()
+  "use server"
+ // const session = await auth()
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -49,13 +56,12 @@ export default async function RootLayout({
         )
       }
       >
-        <AuthProvider session={session}>
+    
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
         <Toaster>
         </Toaster>
           </ThemeProvider>
-        </AuthProvider>
       </body>
     </html>
   );

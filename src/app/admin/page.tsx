@@ -36,9 +36,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { CheckedState } from "@radix-ui/react-checkbox"
 
-
-import { Card } from "@/components/Card"
 
 
 const data: Payment[] = [
@@ -81,7 +80,7 @@ export type Payment = {
   email: string
 }
 
-export const columns: ColumnDef<Payment>[] = [
+const columns: ColumnDef<Payment>[] = [
 
   {
     accessorKey: "status",
@@ -122,8 +121,8 @@ export const columns: ColumnDef<Payment>[] = [
     header: ({ table }) => (
       <Checkbox
         checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
+          table.getIsAllPageRowsSelected() || 
+          (table.getIsSomePageRowsSelected() && "indeterminate") as CheckedState
         }
         onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
         aria-label="Select all"

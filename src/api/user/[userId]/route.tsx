@@ -36,7 +36,7 @@ export async function PATCH(
             id: session.user.id,
           },
           data: {
-            name: payload.name,
+            username: payload.name,
           },
         })
         return new Response(null, { status: 200 })

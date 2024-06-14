@@ -10,8 +10,12 @@ import {
 } from "@/components/ui/tabs"
 
 import {LatestEvals} from "@/components/latest_evals"
-
 import { Card , CardHeader, CardTitle, CardContent} from "@/components/Card"
+
+import {useWalletAuth, ConnectWallet} from "@/components/abstractWalletOps"
+
+
+
 
 // export const metadata: Metadata = {
 // title: "user contribution dashboard",
@@ -20,7 +24,13 @@ import { Card , CardHeader, CardTitle, CardContent} from "@/components/Card"
 
 // TODO: define the current descriptions of the mapload token values
 export default function UserDashboard() {
-return (
+
+    const { isConnecting, isConnected, connect, connectionStatus, wallet } =
+      useWalletAuth();
+      
+
+
+    return (
     <>
     <HeaderApplication/>
     <div className= "grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -57,6 +67,24 @@ return (
             <LatestEvals/>
         </CardContent>
         </Card>
+        <Card>
+        <CardTitle>
+          Connecting to the wallet account
+        </CardTitle>
+  
+        <CardContent>
+  
+        <ConnectWallet
+                  isConnected={isConnected}
+                  isConnecting={isConnecting}
+                  connect={connect}
+                  ConnectionStatus={connectionStatus}
+                  wallet={wallet}
+                />
+        </CardContent>
+  
+      </Card>
+
         </Tabs>
     </div>    
     
