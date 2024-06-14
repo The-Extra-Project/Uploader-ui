@@ -12,35 +12,35 @@ import NextLink from "next/link";
 import { Input } from "@mui/base";
 import  "@/app/styles/global.css"
 
-async function getGithubStars(): Promise<string|null> {
-  try {
-    const response = await fetch(
-      "https://api.github.com/repos/The-extra-project/uploader_ui",
-      {
-        headers: {
-          Accept: "application/vnd.github+json",
-          Authorization: `Bearer ${env.GITHUB_ACCESS_TOKEN}`,
-        },
-        next: {
-          revalidate: 6000,
-        },
-      }
-    )
-    if (!response?.ok) {
-      return null
-    }
+// async function getGithubStars(): Promise<string|null> {
+//   try {
+//     const response = await fetch(
+//       "https://api.github.com/repos/The-extra-project/uploader_ui",
+//       {
+//         headers: {
+//           Accept: "application/vnd.github+json",
+//           Authorization: `Bearer ${env.GITHUB_ACCESS_TOKEN}`,
+//         },
+//         next: {
+//           revalidate: 6000,
+//         },
+//       }
+//     )
+//     if (!response?.ok) {
+//       return null
+//     }
 
-    const json = await response.json()
+//     const json = await response.json()
 
-    return parseInt(json["stargazers_count"]).toLocaleString()
-  } catch (error) {
-    return null
-  }
-}
+//     return parseInt(json["stargazers_count"]).toLocaleString()
+//   } catch (error) {
+//     return null
+//   }
+// }
 
 export default function Home() {
 
-  const stars = getGithubStars()
+  //const stars = getGithubStars()
   return (
     <main>
       <body className="space-y-6 pb-8 pt-6 md:pb-12 md:pt-10 lg:py-32" style={{ backgroundColor: 'rgb(170, 237, 170)' }}>

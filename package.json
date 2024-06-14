@@ -11,6 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@cometh/connect-sdk": "^1.2.23",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@hookform/resolvers": "^3.6.0",
@@ -34,6 +35,8 @@
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tailwindcss/typography": "^0.5.13",
     "@tanstack/react-table": "^8.17.3",
+    "aws-sdk": "^2.1639.0",
+    "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
@@ -44,7 +47,9 @@
     "prettier": "^3.3.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.51.5",
+    "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
     "zod": "^3.23.8"
@@ -55,9 +60,11 @@
     "@types/node": "^20.14.2",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
     "@web3-storage/w3up-client": "^14.1.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "ethers": "^5.5.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "ts-node": "^10.9.2",

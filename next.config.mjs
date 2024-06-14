@@ -7,6 +7,9 @@ const nextConfig = {
         fetches: {
             fullUrl: true
         },
+    },
+    experimental: {
+        esmExternals: "loose"
     }
 };
 

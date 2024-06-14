@@ -10,7 +10,7 @@ declare global {
 
 export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "" )
 
-let supClient: SupabaseClient
+var supClient: SupabaseClient
 
 if (process.env.NODE_ENV === "production") {
     supClient = new SupabaseClient(
@@ -26,6 +26,7 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const db = prismaCLient
+
 // TODO: for the side of the server integration, we need to see which one of the client works
 //export const db2 = createClientServer
 
