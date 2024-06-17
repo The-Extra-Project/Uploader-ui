@@ -42,7 +42,7 @@ export type NavItem = {
     sidebarNav: SidebarNavItem[]
   }
   
-  export type MarketingConfig = {
+  export type Mainpageconfig = {
     mainNav: MainNavItem[]
   }
   

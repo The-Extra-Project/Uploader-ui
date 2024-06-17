@@ -51,15 +51,14 @@ export default function HeaderApplication() {
     
     
     return (
-    <header className="flex items-center justify-between bg-green-100 px-4 py-3 text-white md:px-6">
-    <Link href="page" className="flex items-center">        
+    <header className="flex items-center justify-between bg-green-100 px-4 py-3 text-white md:px-6">        
+ 
     <span className="ml-2 text-lg font-medium text-black ">
         <Link href={"/"}>
         Uploader
         </Link>
-        
         </span>
-    </Link>
+ 
     <Image src={idf} height={100} width={100} alt="IDF"></Image>
     <DropdownMenu>
             <DropdownMenuTrigger asChild>

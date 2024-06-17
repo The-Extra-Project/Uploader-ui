@@ -8,8 +8,8 @@ export const dashboardConfig: DashboardConfig = {
             href: "/",
         },
         {
-            title: "mainpage",
-            href: "/mainpage",
+            title: "Docs",
+            href: "/docs",
         },
         {
             title: "Contact",
@@ -32,7 +32,7 @@ export const siteConfig: SiteConfig = {
     ogImage: "https://extralabs.xyz/",
     links: {
       twitter: "https://twitter.com/extralabs",
-      github: "https://github.com/The-extra-project",
+      github: "https://github.com/The-extra-project/uploader_ui",
     },
     tos: "https://extralabs.xyz/terms-of-use-extra-uploader",
   }

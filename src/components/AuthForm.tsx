@@ -16,7 +16,7 @@ import { PasswordInput } from "@/components/password-input"
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
 import {supabase} from "@/lib/db"
 type FormData = z.infer<typeof userAuthSchema>
-
+import { env } from "@/env.mjs"
 
 export async function storeUserAccount(user: string, password: string) {
 let result 
@@ -59,7 +59,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
   const [formData, setFormData] = React.useState<LoginForm>({ email: '', password: '' });
-
+  const [password, setCurrentPassword] = React.useState("");
   const searchParams = useSearchParams()
 
 
@@ -70,10 +70,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   };
   
 
-   
-
-
-
   async function onSubmit(data: FormData) {
     setIsLoading(true)
 
@@ -82,6 +78,9 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       redirect: false,
       callbackUrl: searchParams?.get("from") || "/dashboard",
     })
+
+    const signUp = await fetch("/user/register")
+
 
     setIsLoading(false)
 
@@ -120,7 +119,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
             <Label htmlFor="current_password">Current Password</Label>
             <PasswordInput
               id="current_password"
-              value={currentPassword}
+              value={password}
               onChange={(e) => setCurrentPassword(e.target.value)}
               autoComplete="current-password"
             />
@@ -131,11 +130,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               </p>
             )}
           </div>
-          <button className={cn(buttonVariants())} disabled={isLoading}>
+          <button className={cn(buttonVariants())} disabled={isLoading} onClick={"/api/user/register"}>
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
-            Signez vous avec email et mot de passe
+            Signez vous
           </button>
         </div>
       </form>
@@ -145,7 +144,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
         </div>
         <div className="relative flex justify-center text-xs uppercase">
           <span className="bg-background px-2 text-muted-foreground">
-            Or continue with
+            Or signez avec
           </span>
         </div>
       </div>
@@ -156,7 +155,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           setIsGitHubLoading(true)
           signIn("github", {
             redirect: true,
-            callbackUrl: "/test",
+            callbackUrl: env.GITHUB_SUPABASE_CALLBACK_URL_GOOGLE ,
           })
         }}
         disabled={isLoading || isGitHubLoading}

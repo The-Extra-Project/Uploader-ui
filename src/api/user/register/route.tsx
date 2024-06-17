@@ -1,7 +1,8 @@
 import {getServerSession} from "next-auth/next"
 import { z } from "zod"
-
+import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 import { authOptions } from "@/lib/auth"
+import { cookies } from 'next/headers'
 import { db } from "@/lib/db"
 import { NextResponse } from "next/server"
 
@@ -18,6 +19,34 @@ import { NextResponse } from "next/server"
     }
     const body = await req.json();
     const {email, password} = body;
-    await db.from("User").insert({email: email , password: password})
+    const supabase = createRouteHandlerClient({cookies})
+   let responseSignIn =  await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
+    if (responseSignIn.error) {
+      return NextResponse.json(
+        { message: responseSignIn.error.message },
+        {
+          status: 401,
+        }
+      );
+    }
+
+
+    await db.from("User").insert({email: email , password: password})
+    
+    
+    return NextResponse.json({
+      message: "authorized"
+    },
+    {
+      status: 200,
+      
+    }  
+  )
   }
+
+
+  

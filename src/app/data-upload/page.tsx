@@ -39,16 +39,30 @@ type UploaderProp = {
 }
 
 export default function UploadPage() {
-    const [uploadedFiles, setUploadedFiles] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState({});
-    const [s3Unchecked,S3Checked ]= useState(false);
+    // const [uploadedFiles, setUploadedFiles] = useState(false);
+    // const [uploadProgress, setUploadProgress] = useState({});
+    const [s3Checked, setS3Checked]= useState(false);
     const [files, setFiles] = useState<File[] | null>(null);
 
     const fileParams = []
     const handleS3Checked = () => {
-        S3Checked(true);
+      setS3Checked(true);
     };
 
+    const handleUpload = () => {
+                
+      if (!s3Checked) {
+          files.forEach((file,i) => {
+              uploadWeb3File({ userName: 'username', fileDir: 'directory', file: file[i], storageType: 'web3Storage' });
+          })
+              
+      } else  {
+          files.forEach((file,i) => {
+              uploadFileS3({ userName: 'username', fileDir: 'directory', file: file[i], storageType: 'web3Storage' });
+          })
+              
+      }
+  }
     const dropZoneConfig = {
         maxFiles: 100,
         maxSize: 1024 * 1024 * 1024 * 4,
@@ -62,7 +76,7 @@ export default function UploadPage() {
         <Card className="flex flex-col items-center justify-center w-full max-w-md space-y-6">
         <div className="mx-auto w-full max-w-2xl space-y-6">
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
-        <h1 className="text-2xl font-bold">Upload Data to Uploader for analysis</h1>
+        <h1 className="text-2xl font-bold">Upload visual data for analysis</h1>
             
         <div className="mt-6 flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">            
             <UploadFile/>
@@ -92,25 +106,12 @@ export default function UploadPage() {
             </FileUploader>
         </div>
         </div>
-          <Checkbox checked={s3Unchecked} id="checkerStorage" onChange={handleS3Checked}/>
+          <Checkbox checked={s3Checked} id="checkerStorage" />
           <Label htmlFor="checkerStorage"> Select S3 for Storage</Label>
         </div>
         <Button size="lg"
         onClick={
-            () => {
-                
-                if (!S3Checked) {
-                    files.forEach((file,i) => {
-                        uploadWeb3File({ userName: 'username', fileDir: 'directory', file: file[i], storageType: 'web3Storage' });
-                    })
-                        
-                } else  {
-                    files.forEach((file,i) => {
-                        uploadFileS3({ userName: 'username', fileDir: 'directory', file: file[i], storageType: 'web3Storage' });
-                    })
-                        
-                }
-            }
+          handleUpload
         }
         >Upload</Button>
         </Card>

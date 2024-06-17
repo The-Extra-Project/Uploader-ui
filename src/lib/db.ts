@@ -1,6 +1,8 @@
+
 import { createClient, SupabaseClient } from "@supabase/supabase-js";  
 import { PrismaClient, Prisma } from '@prisma/client'
-
+import { env } from "@/env.mjs";
+import { configDotenv } from "dotenv";
 
 export const prismaCLient = new PrismaClient()
 declare global {
@@ -8,18 +10,22 @@ declare global {
     var cachedDBClient: SupabaseClient
   }
 
-export const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "" )
+configDotenv({
+  path: "../../.env",
+})
+
+export const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL || "", env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "" )
 
 var supClient: SupabaseClient
 
 if (process.env.NODE_ENV === "production") {
     supClient = new SupabaseClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL || "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+        env.NEXT_PUBLIC_SUPABASE_URL || "", env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
     )
 } else {
   if (!global.cachedDBClient) {
     global.cachedDBClient = new SupabaseClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL || "", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+        env.NEXT_PUBLIC_SUPABASE_URL || "", env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
     )
   }
   supClient = global.cachedDBClient

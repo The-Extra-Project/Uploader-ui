@@ -4,9 +4,11 @@ import { createReadStream } from "fs"
 import { revalidatePath } from "next/cache"
 import { Client, create } from "@web3-storage/w3up-client"
 import S3 from "aws-sdk/clients/s3"
+import { NextApiResponse } from "next"
 
 import { env } from "@/env.mjs"
 import { db } from "@/lib/db"
+
 
 let S3config: S3.Types.ClientConfiguration = {
   apiVersion: "latest",
@@ -29,7 +31,7 @@ let w3Space: any
 
 type email = `${string}@${string}`
 
-;async () => {
+async () => {
   web3StorageClient = await create({})
   w3Space = await web3StorageClient.createSpace("uploader_space")
   web3StorageClient.login(env.WEB3_STORAGE_EMAIL as email)
@@ -63,7 +65,7 @@ export async function uploadFileS3(fileParams: storageParams): Promise<any> {
     Body: createReadStream(fileParams.fileDir + "/" + fileParams.file.lastModified),
     ACL: "public-read",
   }
-  return params
+  return ""
 }
 
 export async function uploadWeb3File(fileParams: storageParams) {

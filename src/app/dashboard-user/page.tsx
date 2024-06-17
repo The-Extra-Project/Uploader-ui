@@ -9,27 +9,53 @@ import {
     TabsList
 } from "@/components/ui/tabs"
 
-import {LatestEvals} from "@/components/latest_evals"
+
+// integrate the API endpoint for setting up the database at the backend
+interface latestEvalProps {
+  currentValue: string;
+  fileName: string;
+
+}
+
+
+export function LatestEvals(current_value, file_name): JSX.Element {
+    return(
+        <>
+       <CardHeader>
+       Filename:
+        <span>{file_name}</span>
+       </CardHeader>
+        <CardContent>
+          <h2 className="text-large text-bold text-muted-foreground font-dark">
+            total mapLoad tokens: 
+            <span>{current_value}</span>              
+          </h2>
+        </CardContent>
+        </>
+    )
+}
+
 import { Card , CardHeader, CardTitle, CardContent} from "@/components/Card"
 
-import {useWalletAuth, ConnectWallet} from "@/components/abstractWalletOps"
+//import {useWalletAuth, ConnectWallet} from "@/components/abstractWalletOps"
+import { Button } from "@/components/ButtonShadcn"
 
 
+const getCurrentValue = ( current_value ): JSX.Element => {
+    return <div> {current_value} </div>;
+  };
 
+const getLastUploadedFile: React.FC<string> = (lastFileUpdated): JSX.Element  => {
+    return <div> {lastFileUpdated} </div>;
 
-// export const metadata: Metadata = {
-// title: "user contribution dashboard",
-// description: "user gets the overall information regarding their contribution on uploader platform"
-// }
+}
+  
+
 
 // TODO: define the current descriptions of the mapload token values
 export default function UserDashboard() {
-
-    const { isConnecting, isConnected, connect, connectionStatus, wallet } =
-      useWalletAuth();
-      
-
-
+    // const { isConnecting, isConnected, connect, connectionStatus, wallet } =
+    //   useWalletAuth();
     return (
     <>
     <HeaderApplication/>
@@ -64,23 +90,25 @@ export default function UserDashboard() {
                 <CardTitle>Your recent uploads</CardTitle>
             </CardHeader>
         <CardContent>
-            <LatestEvals/>
+                <LatestEvals current_value= "" file_name= ""/>
         </CardContent>
         </Card>
         <Card>
         <CardTitle>
           Connecting to the wallet account
         </CardTitle>
-  
+
         <CardContent>
-  
-        <ConnectWallet
+        <Button>
+            Connect wallet account
+        </Button>
+        {/* <ConnectWallet
                   isConnected={isConnected}
                   isConnecting={isConnecting}
                   connect={connect}
                   ConnectionStatus={connectionStatus}
                   wallet={wallet}
-                />
+                /> */}
         </CardContent>
   
       </Card>
