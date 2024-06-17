@@ -3,20 +3,14 @@
  * thanks to https://shadcn-extension.vercel.app/docs/file-upload for the reference drag & drop pattern component implementation.
  */
 
-
 import Link from "next/link"
-import {DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@radix-ui/react-dropdown-menu"
 import { Card } from "@/components/Card"
 import {Button} from "@/components/ui/button"
-import React, {useState, Dispatch, SetStateAction, createContext, useContext} from "react"
+import React, {useState} from "react"
 import { UploadFile} from "@mui/icons-material"
 import {uploadFileS3, uploadWeb3File} from "@/api/file/upload"
 import HeaderApplication from "@/components/HeaderApplication"
 import { Paperclip } from "lucide-react";
-
-
-
-
 
 import {
     FileUploader,

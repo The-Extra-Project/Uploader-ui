@@ -8,6 +8,8 @@ import extra from "@/app/public/extra_logo.png"
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { siteConfig } from "@/config/config-website"
+
+
 export const metadata = {
     title: "Creer Nouveau compte chez Extralabs",
     description: "Create an account to get started.",
@@ -48,7 +50,7 @@ export const metadata = {
               </div>
               </RadioGroup>
               </p>
-            </div>
+            </div>        
             <UserAuthForm />
             <p className="px-8 text-center text-sm text-muted-foreground">
               En cliquant, vous acceptez automatiquement les C.G.V mentionnant danes le lien{" "}

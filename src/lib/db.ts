@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === "production") {
   supClient = global.cachedDBClient
 }
 
-export const db = prismaCLient
+export const db = supabase
 
 // TODO: for the side of the server integration, we need to see which one of the client works
 //export const db2 = createClientServer

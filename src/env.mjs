@@ -21,6 +21,9 @@ server: {
     CHAINID: z.string(),
     TOKEN_CONTRACT_ADDRESS: z.string(),
     PUBLIC_SCAN_URL: z.string(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string(),
+    SUPABASE_URL: z.string()
+
 
 },
 client: {
@@ -39,7 +42,10 @@ client: {
     COMETH_API: z.string(),
     CHAINID: z.string(),
     TOKEN_CONTRACT_ADDRESS: z.string(),
-    PUBLIC_SCAN_URL: z.string()
+    PUBLIC_SCAN_URL: z.string(),
+    SUPABASE_SERVICE_ROLE_KEY: z.string(),
+    SUPABASE_URL: z.string()
+
 
 },
 runtimeEnv: {
@@ -59,6 +65,9 @@ runtimeEnv: {
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID ,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
     GITHUB_ACCESS_TOKEN: process.env.GITHUB_ACCESS_TOKEN,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
+    SUPABASE_URL: process.env.SUPABASE_URL,
+    SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET
 
 
 }

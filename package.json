@@ -11,6 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/supabase-adapter": "^1.2.0",
     "@cometh/connect-sdk": "^1.2.23",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -35,11 +36,13 @@
     "@t3-oss/env-nextjs": "^0.10.1",
     "@tailwindcss/typography": "^0.5.13",
     "@tanstack/react-table": "^8.17.3",
+    "@types/jsonwebtoken": "^9.0.6",
     "aws-sdk": "^2.1639.0",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.381.0",
     "next": "14.2.3",
     "next-auth": "^4.24.7",

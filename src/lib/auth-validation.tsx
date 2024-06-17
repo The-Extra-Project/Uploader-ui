@@ -5,5 +5,9 @@ export const userAuthSchema = z.object({
 })
 
 export const userNameSchema = z.object({
-  name: z.string().min(3).max(32),
+  username: z.string().min(3).max(32),
+})
+
+export const userIdSchema = z.object({
+  userId: z.number().min(1).max(64)
 })

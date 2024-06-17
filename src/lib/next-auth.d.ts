@@ -12,6 +12,8 @@ declare module "next-auth/jwt" {
       user: User & {
         id: UserId
       }
+      // added in order to do type matching with the another verison of the next-auth
+      supabaseAccessToken: string
     }
   }
   

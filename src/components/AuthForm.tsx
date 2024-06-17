@@ -14,8 +14,39 @@ import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/Icons"
 import { PasswordInput } from "@/components/password-input"
 interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-
+import {supabase} from "@/lib/db"
 type FormData = z.infer<typeof userAuthSchema>
+
+
+export async function storeUserAccount(user: string, password: string) {
+let result 
+  try {
+    const params = {
+      user: user, password: password
+    }
+    result = fetch("/user/register", 
+      {
+          headers: {
+            Accept: "application/json",
+            method: "GET"
+          },
+        body: JSON.stringify(
+        params
+        )
+        })
+      }
+      catch(error)
+      {
+        console.log("error in storing account api call:" + error)
+      }
+}
+
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const {
@@ -26,9 +57,22 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(userAuthSchema),
   })
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
-  const [currentPassword, setCurrentPassword] = React.useState("")
   const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
+  const [formData, setFormData] = React.useState<LoginForm>({ email: '', password: '' });
+
   const searchParams = useSearchParams()
+
+
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+  
+
+   
+
+
 
   async function onSubmit(data: FormData) {
     setIsLoading(true)
@@ -73,7 +117,6 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               disabled={isLoading || isGitHubLoading}
               {...register("email")}
             />
-
             <Label htmlFor="current_password">Current Password</Label>
             <PasswordInput
               id="current_password"
