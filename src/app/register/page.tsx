@@ -18,7 +18,6 @@ import { PasswordInput } from "@/components/password-input"
 import { Icons } from "@/components/Icons"
 
 import { signIn } from "next-auth/react"
-import { useForm } from "react-hook-form"
 import React from "react"
 
 import { Input } from "@/components/ButtonShadcn"
@@ -35,13 +34,13 @@ export const metadata = {
   }
 
   export default async function RegisterPage() {
-    const {
-      register,
-      handleSubmit,
-      formState: { errors },
-    } = useForm<FormData>({
-      resolver: zodResolver(userAuthSchema),
-    })
+    // const {
+    //   register,
+    //   handleSubmit,
+    //   formState: { errors },
+    // } = useForm<FormData>({
+    //   resolver: zodResolver(userAuthSchema),
+    // })
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
     const [formData, setFormData] = React.useState<LoginForm>({ email: '', password: '' });
@@ -119,7 +118,7 @@ export const metadata = {
               </p>
             </div>        
             <div className={cn("grid gap-6")} >
-      <form onSubmit={handleSubmit(onSubmit)}>
+      {/* <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
             <Label className="sr-only" htmlFor="email">
@@ -156,7 +155,8 @@ export const metadata = {
             Signez vous
           </button>
         </div>
-      </form>
+      </form> */}
+      <UserAuthForm/>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
