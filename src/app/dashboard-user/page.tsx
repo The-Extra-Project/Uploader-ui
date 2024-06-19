@@ -18,7 +18,7 @@ interface latestEvalProps {
 }
 
 
-export function LatestEvals(current_value, file_name): JSX.Element {
+function LatestEvals(current_value, file_name): JSX.Element {
     return(
         <>
        <CardHeader>
@@ -90,7 +90,7 @@ export default function UserDashboard() {
                 <CardTitle>Your recent uploads</CardTitle>
             </CardHeader>
         <CardContent>
-                <LatestEvals current_value= "" file_name= ""/>
+               
         </CardContent>
         </Card>
         <Card>
@@ -102,13 +102,7 @@ export default function UserDashboard() {
         <Button>
             Connect wallet account
         </Button>
-        {/* <ConnectWallet
-                  isConnected={isConnected}
-                  isConnecting={isConnecting}
-                  connect={connect}
-                  ConnectionStatus={connectionStatus}
-                  wallet={wallet}
-                /> */}
+        
         </CardContent>
   
       </Card>

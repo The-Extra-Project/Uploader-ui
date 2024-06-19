@@ -3,7 +3,7 @@ import { z } from "zod"
 
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
-import { userNameSchema, userIdSchema } from "@/lib/auth-validation"
+import { userNameSchema, userIdSchema, userAuthSchema } from "@/lib/auth-validation"
 
 
 
@@ -32,9 +32,10 @@ export async function GET(
         }
         // Get the request body and validate it.
         const body = await req.json()
-        const payload = userIdSchema.parse(body)
+        const payload = userAuthSchema.parse(body)
         // Update the user.
-      let userName =  await db.from("users").select('username').eq('userId', payload.userId)
+      let userName =  await db.from("User").select("*")
+      
       return new Response(JSON.stringify(userName) , { status: 200 })
       } catch (error) {
         if (error instanceof z.ZodError) {

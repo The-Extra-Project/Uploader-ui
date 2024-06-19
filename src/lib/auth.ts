@@ -1,9 +1,3 @@
-"use server"
-import type {
-  GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse,
-} from "next"
 import { SupabaseAdapter } from "@next-auth/supabase-adapter"
 import jwt from "jsonwebtoken"
 import NextAuth, { getServerSession } from "next-auth"

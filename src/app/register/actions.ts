@@ -3,8 +3,14 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
+interface LoginForm {
+  email: string;
+  password: string;
+}
+
+
 import {supabase} from '@/lib/db'
-export async function signUp(formData: FormData) {
+export async function signIn(formData: FormData) {
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -19,17 +25,17 @@ export async function signUp(formData: FormData) {
     redirect('/error')
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  revalidatePath('/data-upload', 'page')
+  redirect('/data-upload')
 }
 
-export async function signup(formData: FormData) {
+export async function signup(formData: LoginForm) {
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email: formData.email,
+    password: formData.password,
   }
 
   const { error } = await supabase.auth.signUp(data)
@@ -38,6 +44,26 @@ export async function signup(formData: FormData) {
     redirect('/error')
   }
 
-  revalidatePath('/', 'layout')
-  redirect('/')
+  revalidatePath('/data-upload', 'layout')
+  redirect('/data-upload')
+}
+
+
+export async function signupAdmin(formData: LoginForm) {
+
+  // type-casting here for convenience
+  // in practice, you should validate your inputs
+  const data = {
+    email: formData.email,
+    password: formData.password,
+  }
+
+  const { error } = await supabase.auth.signUp(data)
+
+  if (error) {
+    redirect('/error')
+  }
+
+  revalidatePath('/data-upload', 'layout')
+  redirect('/admin')
 }

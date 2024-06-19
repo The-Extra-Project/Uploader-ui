@@ -13,7 +13,7 @@ import { useContext, createContext, Dispatch, SetStateAction, useState } from "r
 
 
 import { CheckIcon } from "@radix-ui/react-icons";
-import {db, supabase} from "@/lib/db"
+import {db} from "@/lib/db"
 
 import { Card, CardContent, CardTitle } from "@/components/Card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -194,9 +194,13 @@ export function useWalletAuth() {
       AbiMapload,
       instanceProvider.getSigner()
     );
+    let useremail= (await db.auth.getUserIdentities()).data.identities[0].user_id
 
-
-    supabase.from("user").insert(wallet.getAddress())
+    db.from("User").update(
+      { username: useremail, 
+        walletAddress: wallet.getAddress(),
+      }
+    )
 
 
     setTokenContract(contract)

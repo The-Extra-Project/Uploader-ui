@@ -2,6 +2,8 @@
 
 import HeaderApplication from "@/components/HeaderApplication"
 import * as React from "react"
+import { z } from "zod"
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,7 +16,27 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react"
+import { ArrowUpDown, ChevronDown } from "lucide-react"
+
+
+import { db } from "@/lib/db"
+
+
+import { useForm } from "react-hook-form"
+
+
+import {Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
+
+
+
+import "@/app/styles/global.css"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -36,49 +58,102 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+
 import { CheckedState } from "@radix-ui/react-checkbox"
+import { zodResolver } from "@hookform/resolvers/zod"
+
+import { Database } from "@/types_supabase"
+
+
+const tokenFormSchema = z.object({
+  email: z.string().min(7).max(25),
+  setTokens: z.number()
+})
 
 
 
-// const data: Payment[] = [
-//   {
-//     id: "lesDecroissant",
-//     amount: 316,
-//     status: "success",
-//     email: "ken99@yahoo.com",
-//   },
-//   {
-//     id: "3u1reuv4",
-//     amount: 242,
-//     status: "success",
-//     email: "Abe45@gmail.com",
-//   },
-//   {
-//     id: "derv1ws0",
-//     amount: 837,
-//     status: "processing",
-//     email: "Monserrat44@gmail.com",
-//   },
-//   {
-//     id: "5kma53ae",
-//     amount: 874,
-//     status: "success",
-//     email: "Silas22@gmail.com",
-//   },
-//   {
-//     id: "bhqecj4p",
-//     amount: 721,
-//     status: "failed",
-//     email: "carmella@hotmail.com",
-//   },
-// ]
+function ContributionSelectionForm() {
 
-// export type Payment = {
-//   id: string
-//   amount: number
-//   status: "pending" | "processing" | "success" | "failed"
-//   email: string
-// }
+const setContributionForm = useForm<z.infer<typeof tokenFormSchema>>({
+  resolver: zodResolver(tokenFormSchema),
+  defaultValues: {
+    email: "",
+    setTokens: 10
+  },
+})
+
+  // 2. Define a submit handler.
+  function onSubmit(values: z.infer<typeof tokenFormSchema>) {
+    
+    try {
+      db.from("admin").update({
+        username: values.email,
+        setTokens: values.setTokens,
+        status: "transferred",
+      })
+    }
+    catch (err) {
+      console.error("While contributionForm:onSubmit ->" + (err))
+    }
+    
+    console.log(values)
+  }
+
+
+
+  return (
+    <Form {...setContributionForm}>
+      <form onSubmit={setContributionForm.handleSubmit(onSubmit)} className="space-y-8">
+        <FormField
+        control={setContributionForm.control["email"]}
+        name="email of contributor"
+        render={
+          ({ field })  => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input placeholder="demo@email.com" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )
+        }/>
+        <FormField
+        control={setContributionForm.control["setTokens"]}
+        name="tokens contributed"
+        render={
+          ({ field })  => (
+            <FormItem>
+              <FormLabel>Tokens Amount</FormLabel>
+              <FormControl>
+                <Input placeholder="1,10...." {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )
+        }
+        />
+    <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+  )
+}
+
+export type Payment = Database["public"]["Tables"]["admin"]["Row"]
+
+
+const data: Payment[] = [
+  {
+    id: 1,
+    fileName: "region_idf.laz",
+    tokens_allotted: 316,
+    status: "success",
+    username:"lesdecroissant",
+    email: "ken99@yahoo.com",
+    "wallet address": "0x1234567890",
+  }
+]
+
 
 
 
@@ -107,39 +182,23 @@ const columns: ColumnDef<Payment>[] = [
     cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Mapload tokens transferred</div>,
+    accessorKey: "fileName",
+    header: "Name of File",
+    cell: ({row}) => <div className="lowercase">{row.getValue("fileName")}</div>,
+  },
+  
+  
+  {
+    accessorKey: "tokens_allotted",
+    header: () => <div className="text-right">Mapload tokens approved</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
+      const amount = parseFloat(row.getValue("tokens_allotted"))
 
       // Format the amount as a dollar amount
-
       return <div className="text-right font-medium">{amount}</div>
     },
   },
 
-  {
-    id: "select",
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() || 
-          (table.getIsSomePageRowsSelected() && "indeterminate") as CheckedState
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
 ]
 
 export default function DataTableDemo() {
@@ -169,12 +228,16 @@ export default function DataTableDemo() {
       rowSelection,
     },
   }); 
-
   return (
     <>
     <body>
     <HeaderApplication/>
-    <div className="w-full">
+    <h1>Admin table</h1>
+    <div className="flex flex-col">
+      <ContributionSelectionForm/>
+      
+      </div>
+    <div className=" width:fit-content overflow-hidden rounded-lg shadow-xs">
 
       <div className="flex items-center py-4">
         <Input

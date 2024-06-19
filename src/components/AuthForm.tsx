@@ -13,38 +13,37 @@ import { Label } from "@/components/Label"
 import { toast } from "@/components/ui/use-toast"
 import { Icons } from "@/components/Icons"
 import { PasswordInput } from "@/components/password-input"
-interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
-import {supabase} from "@/lib/db"
-type FormData = z.infer<typeof userAuthSchema>
 import { env } from "@/env.mjs"
+import { AuthResponse } from "@supabase/supabase-js"
+import {db} from "@/lib/db"
 
-export async function storeUserAccount(user: string, password: string) {
-let result 
-  try {
-    const params = {
-      user: user, password: password
-    }
-    result = fetch("/user/register", 
-      {
-          headers: {
-            Accept: "application/json",
-            method: "GET"
-          },
-        body: JSON.stringify(
-        params
-        )
-        })
-      }
-      catch(error)
-      {
-        console.log("error in storing account api call:" + error)
-      }
-}
 
-interface LoginForm {
-  email: string;
-  password: string;
-}
+interface UserAuthFormProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+type FormData = z.infer<typeof userAuthSchema>
+
+// export async function storeUserAccount(user: string, password: string) {
+// let result 
+//   try {
+//     const params = {
+//       user: user, password: password
+//     }
+//     result = fetch("/user/register", 
+//       {
+//           headers: {
+//             Accept: "application/json",
+//             method: "GET"
+//           },
+//         body: JSON.stringify(
+//         params
+//         )
+//         })
+//       }
+//       catch(error)
+//       {
+//         console.log("error in storing account api call:" + error)
+//       }
+// }
 
 
 
@@ -56,35 +55,52 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   } = useForm<FormData>({
     resolver: zodResolver(userAuthSchema),
   })
+
   const [isLoading, setIsLoading] = React.useState<boolean>(false)
   const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
-  const [formData, setFormData] = React.useState<LoginForm>({ email: '', password: '' });
-  const [password, setCurrentPassword] = React.useState("");
-  const searchParams = useSearchParams()
-
+  const [formData, setFormData] = React.useState<FormData>({
+    email: "",
+    password: "",
+  })
+  const [password, setCurrentPassword] = React.useState("")
+  const [email, setEmail] = React.useState("")
+  
 
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = event.target;
-    setFormData({ ...formData, [name]: value });
-  };
-  
+    const { name, value } = event.target
+    if (name === 'email') {
+      setEmail(value)
+    } else if (name === 'password') {
+      setCurrentPassword(value)
+    }
+  formData[name] = value;
+  register[name] = value;
+  }
 
   async function onSubmit(data: FormData) {
     setIsLoading(true)
 
-    const signInResult = await signIn("email", {
-      email: data.email.toLowerCase(),
-      redirect: false,
-      callbackUrl: searchParams?.get("from") || "/dashboard",
-    })
+    // const signInResult = await signIn("email", {
+    //   email: data.email.toLowerCase(),
+    //   redirect: false,
+    //   callbackUrl: searchParams?.get("from") || "/dashboard",
+    // })
 
-    const signUp = await fetch("/user/register")
-
+    // const signUp = await fetch("/user/register")
+    var signup: AuthResponse | undefined
+    try {
+      signup = await db.auth.signUp({
+        email: data.email,
+        password: data.password,
+      })
+    } catch (error) {
+      console.log("error in storing account api call:" + error)
+    }
 
     setIsLoading(false)
 
-    if (!signInResult?.ok) {
+    if (!signup.data.user.id) {
       return toast({
         title: "Something went wrong.",
         description: "Your sign in request failed. Please try again.",
@@ -94,12 +110,14 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
 
     return toast({
       title: "Check your email",
-      description: "We sent you the confirmation of account activation, check it in your inbox.",
+      description:
+        "We sent you the confirmation of account activation, check it in your inbox.",
     })
   }
 
   return (
     <div className={cn("grid gap-6", className)} {...props}>
+ 
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid gap-2">
           <div className="grid gap-1">
@@ -110,17 +128,17 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               id="email"
               placeholder="name@example.com"
               type="email"
+              value={email}
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading || isGitHubLoading}
-              {...register("email")}
+              onChange={handleInputChange}
             />
             <Label htmlFor="current_password">Current Password</Label>
             <PasswordInput
               id="current_password"
               value={password}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              onChange={handleInputChange}
               autoComplete="current-password"
             />
 
@@ -130,7 +148,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               </p>
             )}
           </div>
-          <button className={cn(buttonVariants())} disabled={isLoading} onClick={"/api/user/register"}>
+          <button className={cn(buttonVariants())} disabled={isLoading}>
             {isLoading && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
@@ -138,35 +156,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </button>
         </div>
       </form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">
-            Or signez avec
-          </span>
-        </div>
       </div>
-      <button
-        type="button"
-        className={cn(buttonVariants({ variant: "outline" }))}
-        onClick={() => {
-          setIsGitHubLoading(true)
-          signIn("github", {
-            redirect: true,
-            callbackUrl: env.GITHUB_SUPABASE_CALLBACK_URL_GOOGLE ,
-          })
-        }}
-        disabled={isLoading || isGitHubLoading}
-      >
-        {isGitHubLoading ? (
-          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-        ) : (
-          <Icons.gitHub className="mr-2 h-4 w-4" />
-        )}{" "}
-        Github
-      </button>
-    </div>
+
   )
 }

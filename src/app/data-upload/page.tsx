@@ -2,16 +2,17 @@
 /**
  * thanks to https://shadcn-extension.vercel.app/docs/file-upload for the reference drag & drop pattern component implementation.
  */
-
 import Link from "next/link"
 import { Card } from "@/components/Card"
 import {Button} from "@/components/ui/button"
 import React, {useState} from "react"
 import { UploadFile} from "@mui/icons-material"
-import {uploadFileS3, uploadWeb3File} from "@/api/file/upload"
+//import {uploadFileS3, uploadWeb3File} from "@/api/file/upload"
 import HeaderApplication from "@/components/HeaderApplication"
 import { Paperclip } from "lucide-react";
+import { ChangeEvent } from 'react';
 
+import { db } from "@/lib/db"
 import {
     FileUploader,
     FileUploaderContent,
@@ -39,30 +40,68 @@ type UploaderProp = {
 }
 
 export default function UploadPage() {
-    // const [uploadedFiles, setUploadedFiles] = useState(false);
-    // const [uploadProgress, setUploadProgress] = useState({});
+    
     const [s3Checked, setS3Checked]= useState(false);
     const [files, setFiles] = useState<File[] | null>(null);
 
     const fileParams = []
+
     const handleS3Checked = () => {
       setS3Checked(true);
     };
 
-    const handleUpload = () => {
-                
-      if (!s3Checked) {
-          files.forEach((file,i) => {
-              uploadWeb3File({ userName: 'username', fileDir: 'directory', file: file[i], storageType: 'web3Storage' });
-          })
-              
-      } else  {
-          files.forEach((file,i) => {
-              uploadFileS3({ userName: 'username', fileDir: 'directory', file: file[i], storageType: 'web3Storage' });
-          })
-              
+  //   const handleUpload = async () => {
+  //     let username = await (await db.auth.getSession()).data.session.user.email
+  //     if (files) {
+  //         if (false) {
+  //             files.forEach((file, i) => {
+  //                 uploadWeb3File({ userName:  username, fileDir: "/" + username + "/" , file: file[i], storageType: 'web3Storage' });
+  //             })
+  //         } else {
+  //             files.forEach((file, i) => {
+  //                 uploadFileS3({ userName:  username, fileDir: "/" + username + "/" , file: file[i], storageType: 's3Storage' });
+  //             })
+  //         }
+  //     } else {
+  //         console.error('Files are null');
+  //     }
+  // }
+
+  const uploadFile = async (files: File) => {
+    const file: File | null | undefined = files
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      const fileData = event.target?.result;
+      if (fileData) {
+        const presignedURL = new URL('/api/file/presigned', window.location.href);
+        
+        presignedURL.searchParams.set('fileName', file.name);
+        presignedURL.searchParams.set('contentType', file.type);
+        fetch(presignedURL.toString())
+          .then((res) => res.json())
+          .then((res) => {
+            const body = new Blob([fileData], { type: file.type });
+            fetch(res.signedUrl, {
+              body,
+              method: 'PUT',
+            }).then(() => {
+              fetch('/api/user/image', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  objectUrl: res.signedUrl.split('?')[0],
+                }),
+              });
+            });
+          });
       }
-  }
+    }
+    };
+
+
+
+  
     const dropZoneConfig = {
         maxFiles: 100,
         maxSize: 1024 * 1024 * 1024 * 4,
@@ -106,14 +145,14 @@ export default function UploadPage() {
             </FileUploader>
         </div>
         </div>
-          <Checkbox checked={s3Checked} id="checkerStorage" />
-          <Label htmlFor="checkerStorage"> Select S3 for Storage</Label>
+          <Checkbox onClick={handleS3Checked} id="checkerStorage" />
+          <Label htmlFor="checkerStorage" > Select S3 for Storage</Label>
         </div>
-        <Button size="lg"
-        onClick={
-          handleUpload
+        {/* <Button size="lg"
+        onChange={
+          uploadFile
         }
-        >Upload</Button>
+        >Upload</Button> */}
         </Card>
         </main>
         </>

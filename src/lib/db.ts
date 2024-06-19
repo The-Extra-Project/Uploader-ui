@@ -3,7 +3,7 @@ import { createClient, SupabaseClient } from "@supabase/supabase-js";
 import { PrismaClient, Prisma } from '@prisma/client'
 import { env } from "@/env.mjs";
 import { configDotenv } from "dotenv";
-
+import { Database } from "@/types_supabase";
 export const prismaCLient = new PrismaClient()
 declare global {
     // eslint-disable-next-line no-var
@@ -14,7 +14,7 @@ configDotenv({
   path: "../../.env",
 })
 
-export const supabase = createClient(env.NEXT_PUBLIC_SUPABASE_URL || "", env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "" )
+export const supabase = createClient<Database>(env.NEXT_PUBLIC_SUPABASE_URL || "", env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "" )
 
 var supClient: SupabaseClient
 

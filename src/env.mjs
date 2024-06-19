@@ -26,7 +26,8 @@ server: {
     TOKEN_CONTRACT_ADDRESS: z.string(),
     PUBLIC_SCAN_URL: z.string(),
     COMETH_API: z.string(),
-
+    S3_BUCKET_NAME: z.string(),
+    DATABASE_URL: z.string()
 },
 client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string(),
@@ -42,6 +43,7 @@ runtimeEnv: {
     GITHUB_SUPABASE_CALLBACK_URL_GOOGLE: process.env.GITHUB_SUPABASE_CALLBACK_URL_GOOGLE,
     S3_ACCESSKEY_PARAM: process.env.S3_ACCESSKEY_PARAM,
     S3_SECRETKEY_PARAM:  process.env.S3_SECRETKEY_PARAM,
+    S3_BUCKET_NAME: process.env.S3_BUCKET_NAME,
     WEB3_STORAGE_EMAIL: process.env.WEB3_STORAGE_EMAIL,
     COMETH_API: process.env.COMETH_API,
     TOKEN_CONTRACT_ADDRESS: process.env.TOKEN_CONTRACT_ADDRESS,
@@ -51,6 +53,8 @@ runtimeEnv: {
     GITHUB_ACCESS_TOKEN: process.env.GITHUB_ACCESS_TOKEN,
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     SUPABASE_URL: process.env.SUPABASE_URL,
-    SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET
+    SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET,
+    DATABASE_URL: process.env.DATABASE_URL
 }
+
 })

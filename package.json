@@ -2,16 +2,19 @@
   "name": "uploader_ui",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "prisma:generate-migration": "npx prisma migrate dev --schema ./src/app/prisma/schema.prisma",
-    "prisma:seed": "ts-node ./src/prisma/seed.ts ",
+    "supabase:update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > src/supabase_types.ts",
+    "supabase:seed": "npx ts-node ./src/seed_admin.ts",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.2.0",
+    "@aws-sdk/client-s3": "^3.598.0",
+    "@aws-sdk/s3-request-presigner": "^3.598.0",
     "@cometh/connect-sdk": "^1.2.23",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -52,10 +55,12 @@
     "react": "^18",
     "react-dom": "^18",
     "react-dropzone": "^14.2.3",
-    "react-hook-form": "^7.51.5",
+    "react-hook-form": "^7.52.0",
+    "resend": "^3.3.0",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
+    "tsx": "^4.15.6",
     "zod": "^3.23.8"
   },
   "devDependencies": {

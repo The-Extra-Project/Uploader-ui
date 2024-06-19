@@ -35,8 +35,7 @@ import { NextResponse } from "next/server"
     }
 
 
-    await db.from("User").insert({email: email , password: password})
-    
+    await db.from("User").update({email: email , password: password})
     
     return NextResponse.json({
       message: "authorized"

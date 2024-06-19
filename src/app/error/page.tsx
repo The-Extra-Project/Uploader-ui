@@ -1,3 +1,14 @@
+import { Card } from "@/components/Card"
+
 export default function ErrorPage() {
-    return <p>Sorry, something went wrong</p>
-  }
+    return (
+      <>
+      <html lang="en">
+    <Card>
+    <p>Sorry, the callback didnt workk</p>
+    </Card>
+    </html>
+    </>
+    )  
+
+}

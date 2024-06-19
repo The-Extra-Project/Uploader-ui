@@ -1,20 +1,22 @@
-
+"use client"
 
 import Link from "next/link"
+import { MouseEventHandler } from 'react';
 
 import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ButtonShadcn"
+import { Button, buttonVariants } from "@/components/ButtonShadcn"
 import Image  from "next/image"
 import { UserAuthForm } from "@/components/AuthForm"
 import extra from "@/app/public/extra_logo.png"
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { siteConfig } from "@/config/config-website"
-import { signUp } from "./actions"
-import {zodResolver} from "@hookform/resolvers/zod"
-import { userAuthSchema } from "@/lib/auth-validation"
-import { PasswordInput } from "@/components/password-input"
+import { signup } from "./actions"
+import { useToast } from "@/components/ui/use-toast"
 
+
+import { PasswordInput } from "@/components/password-input"
+import { env } from "@/env.mjs"
 import { Icons } from "@/components/Icons"
 
 import { signIn } from "next-auth/react"
@@ -22,8 +24,7 @@ import React from "react"
 
 import { Input } from "@/components/ButtonShadcn"
 
-
-export const metadata = {
+ const metadata = {
     title: "Creer Nouveau compte chez Extralabs",
     description: "Create a new account on Extralabs.",
   }
@@ -33,55 +34,58 @@ export const metadata = {
     password: string;
   }
 
-  export default async function RegisterPage() {
-    // const {
-    //   register,
-    //   handleSubmit,
-    //   formState: { errors },
-    // } = useForm<FormData>({
-    //   resolver: zodResolver(userAuthSchema),
-    // })
+  
+  export default  function RegisterPage() {
+
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
-    const [formData, setFormData] = React.useState<LoginForm>({ email: '', password: '' });
-    const [password, setCurrentPassword] = React.useState("");
-  
-  
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      const { name, value } = event.target;
-      setFormData({ ...formData, [name]: value });
-    };
-  
+    //const [formData, setFormData] = React.useState<LoginForm>({email: "", password: ""});
+    const [password, setPassword] = React.useState("")
+    const [email, setEmail] = React.useState("")
 
-    async function onSubmit(data: FormData) {
+    const { toast } = useToast()
+
+    // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //   const { name, value } = event.target;
+    //   setFormData({ ...formData, [name]: value });
+    // };
+  
+      const onSetpassword = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setPassword(event.target.value)
+      }
+
+      const onSetEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setEmail(event.target.value)
+      }
+
+
+
+    const onSubmit = async () => {
+      
+      let credentials: LoginForm = {
+        email: email,
+        password: password
+      }
       setIsLoading(true)
-    
-      const signInResult = await signIn("credentials", {
-        email: data.email.toLowerCase(),
-        redirect: false,
-        callbackUrl: searchParams?.get("from") || "/dashboard",
-      })
-    
-      const signUp = await fetch("/user/register")
-    
-    
+
+      try {
+        signup(credentials)
+        toast({
+          title: "Check your email",
+          description: "We sent you the confirmation of account activation, check it in your inbox.",
+        });
+  
+      } catch(error) {
+        return toast({
+          title: "Error",
+          description: "not able to signup, check the logs for the errors.",
+        })
+        console.log(error)
+      }
       setIsLoading(false)
     
-      if (!signInResult?.ok) {
-        return toast({
-          title: "Something went wrong.",
-          description: "Your sign in request failed. Please try again.",
-          variant: "destructive",
-        })
-      }
-    
-      return toast({
-        title: "Check your email",
-        description: "We sent you the confirmation of account activation, check it in your inbox.",
-      })
     }
-    
-    
+
     return (
       <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
@@ -102,7 +106,7 @@ export const metadata = {
               <h1 className="text-2xl font-semibold tracking-tight">
                 Creer votre compte chez extralabs
               </h1>
-              <p className="text-sm text-muted-foreground">
+              <div className="text-sm text-muted-foreground">
               Selectionne votre type de compte
               <RadioGroup defaultValue="user">
               <div className="flex items-center text-small space-x-2">
@@ -112,51 +116,16 @@ export const metadata = {
 
               <div className="flex items-center text-small space-x-2">
                 <RadioGroupItem value="admin" id="option-one" />
-                    <Label htmlFor="option-one"> Data-admin</Label>
+                    <Label htmlFor="option-two"> Data-admin</Label>
               </div>
               </RadioGroup>
-              </p>
+              </div>
             </div>        
             <div className={cn("grid gap-6")} >
-      {/* <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid gap-2">
-          <div className="grid gap-1">
-            <Label className="sr-only" htmlFor="email">
-              Email
-            </Label>
-            <Input
-              id="email"
-              placeholder="name@example.com"
-              type="email"
-              autoCapitalize="none"
-              autoComplete="email"
-              autoCorrect="off"
-              disabled={isLoading || isGitHubLoading}
-              {...register("email")}
-            />
-            <Label htmlFor="current_password">Current Password</Label>
-            <PasswordInput
-              id="current_password"
-              value={password}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              autoComplete="current-password"
-            />
-
-            {errors?.email && (
-              <p className="px-1 text-xs text-red-600">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <button className={cn(buttonVariants())} disabled={isLoading} formAction={signUp}>
-            {isLoading && (
-              <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-            )}
-            Signez vous
-          </button>
-        </div>
-      </form> */}
-      <UserAuthForm/>
+      {/* <UserAuthForm/> */}
+      <Input type="text border" name="email" value={email} onChange={onSetEmail} />
+      <Input type="password" name="password" value={password} onChange={onSetpassword} />
+      <Button onClick={onSubmit} >Signez Vous</Button>
       <div className="relative">
         <div className="absolute inset-0 flex items-center">
           <span className="w-full border-t" />
@@ -187,7 +156,7 @@ export const metadata = {
         Github
       </button>
     </div>
-            <p className="px-8 text-center text-sm text-muted-foreground">
+            <div className="px-8 text-center text-sm text-muted-foreground">
               En cliquant, vous acceptez automatiquement les C.G.V mentionnant danes le lien{" "}
               <Link
                 href={siteConfig.tos}
@@ -196,7 +165,7 @@ export const metadata = {
                 ici
               </Link>              
               .
-            </p>
+            </div>
           </div>
         </div>
       </div>
