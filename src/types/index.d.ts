@@ -1,4 +1,3 @@
-import {User} from "@prisma/client"
 import {Icons} from "@/components/Icons"
 
 export type NavItem = {
