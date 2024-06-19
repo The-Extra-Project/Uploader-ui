@@ -22,7 +22,7 @@ import {
 import { toast } from "sonner";
 import { Trash2 as RemoveIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
-
+import { env } from "@/env.mjs";
 type DirectionOptions = "rtl" | "ltr" | undefined;
 
 type FileUploaderContextType = {
@@ -75,9 +75,11 @@ export const FileUploader = forwardRef<
     const [isFileTooBig, setIsFileTooBig] = useState(false);
     const [isLOF, setIsLOF] = useState(false);
     const [activeIndex, setActiveIndex] = useState(-1);
+  
     const {
       accept = {
-        "image/*": [".jpg", ".jpeg", ".png", ".gif"],
+        "image/png": [".jpg", ".jpeg", ".png", ".gif"],
+        "video/*": [".mov"]
       },
       maxFiles = 1,
       maxSize = 4 * 1024 * 1024,
@@ -210,6 +212,11 @@ export const FileUploader = forwardRef<
       onDrop,
       onDropRejected: () => setIsFileTooBig(true),
       onDropAccepted: () => setIsFileTooBig(false),
+      accept:{
+        'image/png': ['.png'],
+        'pcd/laz': ['.laz', '.las', '.xyz', '.obj', '.ptx'],
+        'video/mov': ['.mov']
+      }
     });
 
     return (

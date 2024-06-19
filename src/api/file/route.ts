@@ -1,25 +1,37 @@
+import { createPresignedPost } from '@aws-sdk/s3-presigned-post'
+import { S3Client } from '@aws-sdk/client-s3'
+import { v4 as uuidv4 } from 'uuid'
 import { db } from "@/lib/db";
-import { NextResponse, type NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { env } from "@/env.mjs";
-export async function GET(request: NextRequest) {
-    const { objectUrl } = await request.json();
+/**
+ * 
+ * @param request  consisting of the file parameters (namely name and the file reference for the storage).
+ * 
+ */
 
+export async function POST(request: Request) {
+  if (!env.S3_BUCKET_NAME ) return new Response(null, { status: 500 });
+  const { filename, contentType, error  } = await request.json();
+    if(error) {
+      return NextResponse.json({code: '404'})
+    }
 
-    if (env.SUPABASE_URL) return new Response(null, { status: 500 });
-
-    const sql = db.from("User")
+  const sql = db.from("User")
+  let client =  new S3Client({ region: env.S3_REGION })
     try {
       // Create the user table if it does not exist
       // Mock call to get the user
-      const user = (await db.auth.getUser()).data.user.email
-      // Insert the user name and the reference to the image into the user table
-//      await sql('INSERT INTO "user" (name, image) VALUES ($1, $2)', [user, objectUrl]);
-        await sql.update({
-            email: user,
-            createdAt: objectUrl
-        })
-
-return NextResponse.json({ code: 1 });
+      const useremail = (await db.auth.getUser()).data.user.email
+      
+      var { url, fields }  = await createPresignedPost(
+        client, {
+          Bucket: env.S3_BUCKET_NAME,
+          Key: uuidv4()
+        }
+      )
+      
+return NextResponse.json({ url,fields });
     } catch (e) {
       return NextResponse.json({
         code: 0,

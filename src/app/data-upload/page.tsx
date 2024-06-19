@@ -12,25 +12,20 @@ import HeaderApplication from "@/components/HeaderApplication"
 import { Paperclip } from "lucide-react";
 import { ChangeEvent } from 'react';
 
-import { db } from "@/lib/db"
+import { NextRequest } from "next/server"
+
+
 import {
     FileUploader,
     FileUploaderContent,
+    useFileUpload,
     FileUploaderItem,
     FileInput,
   } from "@/components/DropzoneFile";
   
 
-import { Trash as RemoveIcon } from "lucide-react";
-import { buttonVariants } from "@/components/ui/button";
 import {Checkbox} from "@/components/ui/checkbox"
 import { Label } from "@/components/Label"
-
-type FileUploaderProps = {
-fileUploadType: "web3Storage" | "S3",
-fileDir: string,
-isFileTooBig: boolean;
-}
 
 type UploaderProp = {
     value: File[] | null;
@@ -40,66 +35,66 @@ type UploaderProp = {
 }
 
 export default function UploadPage() {
-    
-    const [s3Checked, setS3Checked]= useState(false);
+
+    const [s3uploading, setS3Uploading]= useState(false);
     const [files, setFiles] = useState<File[] | null>(null);
+    
 
-    const fileParams = []
 
-    const handleS3Checked = () => {
-      setS3Checked(true);
-    };
+    const uploadFile = async (e: React.FormEvent<HTMLButtonElement>)  => {
+      e.preventDefault()
 
-  //   const handleUpload = async () => {
-  //     let username = await (await db.auth.getSession()).data.session.user.email
-  //     if (files) {
-  //         if (false) {
-  //             files.forEach((file, i) => {
-  //                 uploadWeb3File({ userName:  username, fileDir: "/" + username + "/" , file: file[i], storageType: 'web3Storage' });
-  //             })
-  //         } else {
-  //             files.forEach((file, i) => {
-  //                 uploadFileS3({ userName:  username, fileDir: "/" + username + "/" , file: file[i], storageType: 's3Storage' });
-  //             })
-  //         }
-  //     } else {
-  //         console.error('Files are null');
-  //     }
-  // }
-
-  const uploadFile = async (files: File) => {
-    const file: File | null | undefined = files
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      const fileData = event.target?.result;
-      if (fileData) {
-        const presignedURL = new URL('/api/file/presigned', window.location.href);
-        
-        presignedURL.searchParams.set('fileName', file.name);
-        presignedURL.searchParams.set('contentType', file.type);
-        fetch(presignedURL.toString())
-          .then((res) => res.json())
-          .then((res) => {
-            const body = new Blob([fileData], { type: file.type });
-            fetch(res.signedUrl, {
-              body,
-              method: 'PUT',
-            }).then(() => {
-              fetch('/api/user/image', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  objectUrl: res.signedUrl.split('?')[0],
-                }),
-              });
-            });
-          });
+      if (!files) {
+        alert('Please select a file to upload.')
+        return
       }
+      files.forEach( async (file) => {
+       
+       
+        const response = await fetch(
+            '/api/file',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ filename: file.name, contentType: file.type }),
+          }
+        )
+
+
+
+        if (response.ok) {
+          const { url, fields } = await response.json()
+    
+          const formData = new FormData()
+          Object.entries(fields).forEach(([key, value]) => { formData.append(key, value as string) })
+          formData.append('file', file)
+          const uploadResponse = await fetch(url, {
+            method: 'POST',
+            body: formData,
+          })
+    
+          if (uploadResponse.ok) {
+            alert('Upload successful!')
+          } else {
+            console.error('S3 Upload Error:', uploadResponse)
+            alert('Upload failed.')
+          }
+          
+
+
     }
-    };
 
+    else {
+      alert('Failed to get pre-signed URL.')
+    }
 
+    setS3Uploading(false)
+
+  })
+}
+  
 
   
     const dropZoneConfig = {
@@ -116,7 +111,8 @@ export default function UploadPage() {
         <div className="mx-auto w-full max-w-2xl space-y-6">
         <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-950">
         <h1 className="text-2xl font-bold">Upload visual data for analysis</h1>
-            
+
+    
         <div className="mt-6 flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">            
             <UploadFile/>
             <FileUploader
@@ -145,16 +141,18 @@ export default function UploadPage() {
             </FileUploader>
         </div>
         </div>
-          <Checkbox onClick={handleS3Checked} id="checkerStorage" />
-          <Label htmlFor="checkerStorage" > Select S3 for Storage</Label>
+          {/* <Checkbox onClick={handleS3Checked} id="checkerStorage" />
+          <Label htmlFor="checkerStorage" > Select S3 for Storage</Label> */}
         </div>
-        {/* <Button size="lg"
-        onChange={
-          uploadFile
-        }
-        >Upload</Button> */}
+        <Button size="lg"
+        type="submit"
+        onSubmit={uploadFile}
+      >Upload</Button>
+
         </Card>
+
         </main>
+
         </>
     )
 

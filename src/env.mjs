@@ -27,7 +27,8 @@ server: {
     PUBLIC_SCAN_URL: z.string(),
     COMETH_API: z.string(),
     S3_BUCKET_NAME: z.string(),
-    DATABASE_URL: z.string()
+    S3_REGION: z.string(),
+    DATABASE_URL: z.string(),
 },
 client: {
     NEXT_PUBLIC_SUPABASE_URL: z.string(),
@@ -54,7 +55,7 @@ runtimeEnv: {
     SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
     SUPABASE_URL: process.env.SUPABASE_URL,
     SUPABASE_JWT_SECRET: process.env.SUPABASE_JWT_SECRET,
-    DATABASE_URL: process.env.DATABASE_URL
+    DATABASE_URL: process.env.DATABASE_URL,
+    S3_REGION: process.env.S3_REGION
 }
-
 })
