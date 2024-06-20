@@ -22,28 +22,4 @@ export async function GET(req: Request) {
             }
         );
     }
-
-    const fetchProgressedStatus = async () => {
-
-        //const analysts = await db.from("Users").select("id amount );
-        
-        
-        
-        // .findMany({
-        //     where: {
-        //         email: session.user.email,
-        //     },
-        //     select: {
-        //         id: true,
-        //         amount: true,
-        //         status: true,
-        //         email: true,
-        //     },
-        // })
-
-    }
-
-
-
-
 }

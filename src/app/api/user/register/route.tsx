@@ -3,11 +3,16 @@ import { z } from "zod"
 import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs"
 import { authOptions } from "@/lib/auth"
 import { cookies } from 'next/headers'
-import { db } from "@/lib/db"
+import { signup,  } from "@/app/(auth)/login/actions"
 import { NextResponse } from "next/server"
+import type  {NextRequest} from "next/server"
+  
 
-  // /user/register in order to create new account via the email /password
-  export async function POST(req: Request) {
+
+// /user/register in order to create new account via the email /password
+  export async function POST(req: NextRequest) {
+
+
     const session = await getServerSession(authOptions);
     if (!session) {
       return NextResponse.json(

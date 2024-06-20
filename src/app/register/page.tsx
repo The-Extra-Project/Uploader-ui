@@ -11,7 +11,7 @@ import extra from "@/app/public/extra_logo.png"
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { siteConfig } from "@/config/config-website"
-import { signup } from "./actions"
+import { signup } from "../api/user/register/actions"
 import { useToast } from "@/components/ui/use-toast"
 
 
@@ -39,16 +39,11 @@ import { Input } from "@/components/ButtonShadcn"
 
     const [isLoading, setIsLoading] = React.useState<boolean>(false)
     const [isGitHubLoading, setIsGitHubLoading] = React.useState<boolean>(false)
-    //const [formData, setFormData] = React.useState<LoginForm>({email: "", password: ""});
     const [password, setPassword] = React.useState("")
     const [email, setEmail] = React.useState("")
 
     const { toast } = useToast()
 
-    // const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //   const { name, value } = event.target;
-    //   setFormData({ ...formData, [name]: value });
-    // };
   
       const onSetpassword = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(event.target.value)
@@ -57,8 +52,6 @@ import { Input } from "@/components/ButtonShadcn"
       const onSetEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value)
       }
-
-
 
     const onSubmit = async () => {
       
