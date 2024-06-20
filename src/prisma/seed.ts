@@ -31,7 +31,6 @@
 //     },
 //   ] satisfies Prisma.UserCreateInput[]
 
-
 // //   storageType: {
 // //     create: [
 // //       {
@@ -42,7 +41,6 @@
 // //     ],
 // //   },
 
-
 // // walletSupply: {
 // //     create: [
 // //       {
@@ -51,8 +49,6 @@
 // //       },
 // //     ],
 // //   },
-
-
 
 // async function main() {
 //     console.log("creating the database  with the user");
@@ -63,7 +59,7 @@
 //         create: userInfo[0], // Data to create if the user doesn't exist
 //     })
 //       console.log(`Created user with id: ${user.id}`)
-  
+
 //     console.log("seeding");
 // }
 

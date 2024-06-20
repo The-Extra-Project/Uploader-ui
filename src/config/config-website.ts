@@ -1,43 +1,37 @@
 import { DashboardConfig, SiteConfig } from "@/types";
 
-
 export const dashboardConfig: DashboardConfig = {
-    mainNav: [
-        {
-            title: "Home",
-            href: "/",
-        },
-        {
-            title: "Docs",
-            href: "/docs",
-        },
-        {
-            title: "Contact",
-            href: "/contact",
-        },
-    ],
-    sidebarNav: [
-        {
-            title: "About",
-            href: "/",
-        },
-    ]
-}
+  mainNav: [
+    {
+      title: "Home",
+      href: "/",
+    },
+    {
+      title: "Docs",
+      href: "/docs",
+    },
+    {
+      title: "Contact",
+      href: "/contact",
+    },
+  ],
+  sidebarNav: [
+    {
+      title: "About",
+      href: "/",
+    },
+  ],
+};
 
 export const siteConfig: SiteConfig = {
-    name: "Uploader",
-    description:
-      "An SaaS application that allows the clients to get their open source application deployed and delievered on scale .",
-    url: "https://extralabs.xyz",
-    ogImage: "https://extralabs.xyz/",
-    links: {
-      twitter: "https://twitter.com/extralabs",
-      github: "https://github.com/The-extra-project/uploader_ui",
-    },
-    tos: "https://extralabs.xyz/terms-of-use-extra-uploader",
-  }
-  
-
-
-
-
+  name: "Uploader",
+  description:
+    "An SaaS application that allows the clients to get their open source application deployed and delievered on scale .",
+  url: "https://extralabs.xyz",
+  ogImage: "https://extralabs.xyz/",
+  links: {
+    twitter: "https://twitter.com/extralabs",
+    github: "https://github.com/The-extra-project/uploader_ui",
+  },
+  tos: "https://extralabs.xyz/terms-of-use-extra-uploader",
+};

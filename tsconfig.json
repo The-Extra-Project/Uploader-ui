@@ -23,6 +23,13 @@
       "@/lib/": ["src/lib/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.css", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/**/**.ts"],
-  "exclude": ["node_modules",]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.css",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/api/**/**.ts"
+  ],
+  "exclude": ["node_modules"]
 }

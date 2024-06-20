@@ -1,10 +1,9 @@
 // File: app/api/presigned/route.ts
 
-import { NextResponse, type NextRequest } from 'next/server';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
-import { env } from '@/env.mjs';
-
+import { NextResponse, type NextRequest } from "next/server";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
+import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import { env } from "@/env.mjs";
 
 export async function GET(request: NextRequest) {
   const accessKeyId = env.S3_ACCESSKEY_PARAM;
@@ -14,13 +13,13 @@ export async function GET(request: NextRequest) {
     return new Response(null, { status: 500 });
   }
   const searchParams = request.nextUrl.searchParams;
-  const fileName = searchParams.get('fileName');
-  const contentType = searchParams.get('contentType');
+  const fileName = searchParams.get("fileName");
+  const contentType = searchParams.get("contentType");
   if (!fileName || !contentType) {
     return new Response(null, { status: 500 });
   }
   const client = new S3Client({
-    region: 'us-east-2',
+    region: "us-east-2",
     credentials: {
       accessKeyId,
       secretAccessKey,

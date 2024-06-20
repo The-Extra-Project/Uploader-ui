@@ -1,20 +1,18 @@
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
-import { createClient } from '@supabase/supabase-js'
-import {configDotenv} from "dotenv"
-
-
+import { createClient } from "@supabase/supabase-js";
+import { configDotenv } from "dotenv";
 
 export default async function PrivatePage() {
   let supabase = createClient(
     process.env.GITHUB_CLIENT_ID || "",
-    process.env.GITHUB_CLIENT_SECRET || ""
-  )
+    process.env.GITHUB_CLIENT_SECRET || "",
+  );
 
-  const { data, error } = await supabase.auth.getUser()
+  const { data, error } = await supabase.auth.getUser();
   if (error || !data?.user) {
-    redirect('/login')
+    redirect("/login");
   }
 
-  return <p>Hello {data.user.email}</p>
+  return <p>Hello {data.user.email}</p>;
 }

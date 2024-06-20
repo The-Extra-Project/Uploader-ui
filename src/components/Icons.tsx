@@ -22,20 +22,15 @@ import {
   User,
   X,
   type Icon as LucideIcon,
-} from "lucide-react"
+} from "lucide-react";
 
-import Image from "next/image"
+import Image from "next/image";
 
 //import extra_logo from "@/app/public/extra_logo.png"
 
 export const otherIcons = {
-
-chevronLeft: ChevronLeft
-
-
-
-
-}
+  chevronLeft: ChevronLeft,
+};
 
 export const Icons = {
   logo: Command,
@@ -78,4 +73,4 @@ export const Icons = {
   ),
   twitter: X,
   check: Check,
-}
+};

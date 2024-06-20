@@ -1,21 +1,21 @@
-import { SupabaseAdapter } from "@next-auth/supabase-adapter"
-import jwt from "jsonwebtoken"
-import NextAuth, { getServerSession } from "next-auth"
+import { SupabaseAdapter } from "@next-auth/supabase-adapter";
+import jwt from "jsonwebtoken";
+import NextAuth, { getServerSession } from "next-auth";
 // import { configDotenv } from "dotenv"
-import type { NextAuthOptions } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
-import GithubProvider from "next-auth/providers/github"
+import type { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GithubProvider from "next-auth/providers/github";
 
-import { env } from "@/env.mjs"
-import { db, supabase } from "@/lib/db"
-import { configDotenv } from "dotenv"
+import { env } from "@/env.mjs";
+import { db, supabase } from "@/lib/db";
+import { configDotenv } from "dotenv";
 
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
 
 //configDotenv()
 configDotenv({
   path: "../../../.env",
-})
+});
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -30,7 +30,7 @@ export const authOptions: NextAuthOptions = {
   }),
   callbacks: {
     async session({ session, token, user }) {
-      const signingSecret = env.SUPABASE_JWT_SECRET
+      const signingSecret = env.SUPABASE_JWT_SECRET;
       if (signingSecret) {
         const payload = {
           aud: "authenticated",
@@ -38,14 +38,12 @@ export const authOptions: NextAuthOptions = {
           sub: user.id,
           email: user.email,
           role: "authenticated",
-        }
-        session.supabaseAccessToken = jwt.sign(payload, signingSecret)
+        };
+        session.supabaseAccessToken = jwt.sign(payload, signingSecret);
       }
-      return session
+      return session;
     },
   },
-}
+};
 
-
-
-export const { handlers, auth, signIn, signOut } = NextAuth(authOptions)
+export const { handlers, auth, signIn, signOut } = NextAuth(authOptions);

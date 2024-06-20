@@ -1,15 +1,14 @@
-"use server"
+"use server";
 
-import { createReadStream } from "fs"
-import { revalidatePath } from "next/cache"
-import { Client, create } from "@web3-storage/w3up-client"
-import { S3Client, PutObjectCommand, S3 } from '@aws-sdk/client-s3';
-import { NextApiResponse } from "next"
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import { createReadStream } from "fs";
+import { revalidatePath } from "next/cache";
+import { Client, create } from "@web3-storage/w3up-client";
+import { S3Client, PutObjectCommand, S3 } from "@aws-sdk/client-s3";
+import { NextApiResponse } from "next";
+import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-import { env } from "@/env.mjs"
-import { db } from "@/lib/db"
-
+import { env } from "@/env.mjs";
+import { db } from "@/lib/db";
 
 // let S3config: S3.Types.ClientConfiguration = {
 //   apiVersion: "latest",

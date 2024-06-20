@@ -1,7 +1,6 @@
 import { supabase as db } from "src/lib/db";
 import { Database } from "src/types_supabase";
 
-
 const IncludeDummyData: Database["public"]["Tables"]["admin"]["Row"][] = [
   {
     id: 1,
@@ -32,7 +31,6 @@ const IncludeDummyData: Database["public"]["Tables"]["admin"]["Row"][] = [
     "wallet address": "0x1234567890",
   },
 
-
   {
     id: 4,
     fileName: "versailles.laz",
@@ -42,25 +40,21 @@ const IncludeDummyData: Database["public"]["Tables"]["admin"]["Row"][] = [
     email: "demo@yahoo.com",
     "wallet address": "0x1234567890",
   },
-]
-
+];
 
 async function main() {
-    console.log("creating the database  with the user");
+  console.log("creating the database  with the user");
 
-    const user = db.from("admin").insert(IncludeDummyData);
-      console.log(`added the parameters and did seeding: ${(await user).data}`)
-  
+  const user = db.from("admin").insert(IncludeDummyData);
+  console.log(`added the parameters and did seeding: ${(await user).data}`);
 }
-
 
 main()
   .then(async () => {
-    await db.getChannels()
+    await db.getChannels();
   })
   .catch(async (e) => {
-    console.error(e)
-    await db.removeAllChannels()
-    process.exit(1)
-  })
-
+    console.error(e);
+    await db.removeAllChannels();
+    process.exit(1);
+  });

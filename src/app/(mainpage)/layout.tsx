@@ -1,20 +1,18 @@
-import Link from "next/link"
-import { cn } from "@/lib/utils"
-import { buttonVariants } from "@/components/ui/button"
-import { dashboardConfig } from "@/config/config-website"
-import { MainNav } from "@/components/main-nav"
-import { SiteFooter } from "@/components/siteconfig"
-
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { dashboardConfig } from "@/config/config-website";
+import { MainNav } from "@/components/main-nav";
+import { SiteFooter } from "@/components/siteconfig";
 
 interface MainpageLayoutProps {
-    children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export default async function MainpageLayout({
-    children
+  children,
 }: MainpageLayoutProps) {
-
-    return (
+  return (
     <div className="flex min-h-screen flex-col">
       <header className="container z-40 bg-background">
         <div className="flex h-20 items-center justify-between py-6">
@@ -24,7 +22,7 @@ export default async function MainpageLayout({
               href="/login"
               className={cn(
                 buttonVariants({ variant: "secondary", size: "sm" }),
-                "px-4"
+                "px-4",
               )}
             >
               Login
@@ -35,8 +33,5 @@ export default async function MainpageLayout({
       <main className="flex-1">{children}</main>
       <SiteFooter />
     </div>
-  )
-
-
-
+  );
 }
