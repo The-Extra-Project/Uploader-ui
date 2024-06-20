@@ -7,12 +7,10 @@ import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
 import { UploadFile } from "@mui/icons-material";
+import { uploadS3Files } from "@/app/api/file/upload";
 //import {uploadFileS3, uploadWeb3File} from "@/api/file/upload"
 import HeaderApplication from "@/components/HeaderApplication";
 import { Paperclip } from "lucide-react";
-import { ChangeEvent } from "react";
-
-import { NextRequest } from "next/server";
 
 import {
   FileUploader,
@@ -35,46 +33,50 @@ type UploaderProp = {
 export default function UploadPage() {
   const [s3uploading, setS3Uploading] = useState(false);
   const [files, setFiles] = useState<File[] | null>(null);
-
+  const [fields, setFields] = useState<any>(null);
   const uploadFile = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-
+    setS3Uploading(true);
     if (!files) {
       alert("Please select a file to upload.");
       return;
     }
     files.forEach(async (file) => {
-      const response = await fetch("/api/file", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ filename: file.name, contentType: file.type }),
-      });
+      // const response = await fetch("/api/file", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify({ filename: file.name, contentType: file.type }),
+      // });
 
-      if (response.ok) {
-        const { url, fields } = await response.json();
+      // if (response.ok) {
+      //   const { url, fields } = await response.json();
 
-        const formData = new FormData();
-        Object.entries(fields).forEach(([key, value]) => {
-          formData.append(key, value as string);
-        });
-        formData.append("file", file);
-        const uploadResponse = await fetch(url, {
-          method: "POST",
-          body: formData,
-        });
+      //   const formData = new FormData();
 
-        if (uploadResponse.ok) {
-          alert("Upload successful!");
-        } else {
-          console.error("S3 Upload Error:", uploadResponse);
-          alert("Upload failed.");
-        }
-      } else {
-        alert("Failed to get pre-signed URL.");
-      }
+      //   Object.entries(fields).forEach(([key, value]) => {
+      //     formData.append(key, value as string);
+      //   });
+      //   formData.append("file", file);
 
+      //   const uploadResponse = await fetch(url, {
+      //     method: "POST",
+      //     body: formData,
+      //   });
+
+      //   if (uploadResponse.ok) {
+      //     alert("Upload successful!");
+      //   } else {
+      //     console.error("S3 Upload Error:", uploadResponse);
+      //     alert("Upload failed.");
+      //   }
+      // } else {
+      //   alert("Failed to get pre-signed URL.");
+      // }
+
+      const { url, fields } = await uploadS3Files(file.name);
+      setFields(fields);
       setS3Uploading(false);
     });
   };
@@ -97,7 +99,6 @@ export default function UploadPage() {
               </h1>
 
               <div className="mt-6 flex h-48 items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 dark:border-gray-700 dark:bg-gray-900">
-                <UploadFile />
                 <FileUploader
                   value={files}
                   onValueChange={setFiles}
@@ -132,9 +133,20 @@ export default function UploadPage() {
             {/* <Checkbox onClick={handleS3Checked} id="checkerStorage" />
           <Label htmlFor="checkerStorage" > Select S3 for Storage</Label> */}
           </div>
-          <Button size="lg" type="submit" onSubmit={uploadFile}>
+          <Button
+            size="lg"
+            type="submit"
+            disabled={!files || files.length === 0}
+            onSubmit={uploadFile}
+          >
             Upload
           </Button>
+          {fields && (
+            <div className="mt-4">
+              <h2 className="text-xl font-bold">Upload Fields:</h2>
+              <pre>{JSON.stringify(fields, null, 2)}</pre>
+            </div>
+          )}
         </Card>
       </main>
     </>

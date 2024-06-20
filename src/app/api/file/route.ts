@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { db } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
 import { env } from "@/env.mjs";
+
 /**
  *
  * @param request  consisting of the file parameters (namely name and the file reference for the storage).
@@ -17,7 +18,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ code: "404" });
   }
 
-  const sql = db.from("User");
+  const sql = db.from("admin");
   let client = new S3Client({ region: env.S3_REGION });
   try {
     // Create the user table if it does not exist
@@ -29,6 +30,11 @@ export async function POST(request: Request) {
       Key: uuidv4(),
     });
 
+    sql.update({
+      fileName: filename,
+      email: useremail,
+      "wallet address": "0X00000",
+    });
     return NextResponse.json({ url, fields });
   } catch (e) {
     return NextResponse.json({

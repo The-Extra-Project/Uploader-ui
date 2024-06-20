@@ -19,14 +19,9 @@ let responseUsername;
 
 const getUserName = async () => {
   try {
-    responseUsername = await fetch("/api/user/username", {
-      method: "GET",
-      headers: {
-        Accept: "application/json",
-        method: "GET",
-      },
-      body: JSON.stringify(await supabase.auth.getUser()),
-    });
+    const userId = (await supabase.auth.getUser()).data.user.email;
+
+    responseUsername = await fetch(`/api/user/username?userId=${userId}`);
   } catch (error) {
     console.log(error);
   }
@@ -73,9 +68,13 @@ export default function HeaderApplication() {
           <DropdownMenuItem>
             <Link href="/app/dashboard-user">Profile</Link>
           </DropdownMenuItem>
-          <DropdownMenuItem> Settings </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/app/settings"> Settings </Link>
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem> Logout </DropdownMenuItem>
+          <DropdownMenuItem>
+            <Link href="/logout">Logout</Link>
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

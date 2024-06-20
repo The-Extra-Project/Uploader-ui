@@ -16,22 +16,22 @@ export const supabase = createClient<Database>(
   env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
 );
 
-var supClient: SupabaseClient;
+// var supClient: SupabaseClient;
 
-if (process.env.NODE_ENV === "production") {
-  supClient = new SupabaseClient(
-    env.NEXT_PUBLIC_SUPABASE_URL || "",
-    env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
-  );
-} else {
-  if (!global.cachedDBClient) {
-    global.cachedDBClient = new SupabaseClient(
-      env.NEXT_PUBLIC_SUPABASE_URL || "",
-      env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
-    );
-  }
-  supClient = global.cachedDBClient;
-}
+// if (process.env.NODE_ENV === "production") {
+//   supClient = new SupabaseClient(
+//     env.NEXT_PUBLIC_SUPABASE_URL || "",
+//     env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+//   );
+// } else {
+//   if (!global.cachedDBClient) {
+//     global.cachedDBClient = new SupabaseClient(
+//       env.NEXT_PUBLIC_SUPABASE_URL || "",
+//       env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",
+//     );
+//   }
+//   supClient = global.cachedDBClient;
+// }
 
 export const db = supabase;
 

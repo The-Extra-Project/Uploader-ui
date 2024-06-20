@@ -3,6 +3,7 @@ import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
+/** fetches the current parametrers of the user file and the tokens */
 export async function GET(req: Request) {
   const session = getServerSession(authOptions);
   if (!session) {
@@ -15,7 +16,7 @@ export async function GET(req: Request) {
   }
   const current_value = await db
     .from("User")
-    .select("*")
+    .select("tokens_allotted")
     .eq("email", (await session).user.email);
   const current_file = await db
     .from("User")

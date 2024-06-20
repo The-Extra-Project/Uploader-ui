@@ -9,6 +9,7 @@ import type { NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { signupAdmin, signup } from "@/app/api/user/register/actions";
 import { use } from "react";
+import { redirect } from "next/navigation";
 // /user/register in order to create new account via the email /password
 
 export async function POST(req: NextRequest) {
@@ -42,10 +43,13 @@ export async function POST(req: NextRequest) {
       email: email,
       password: password,
     };
+
+    await signup(signupParams);
   }
 
   await db.from("User").update({ email: email, password: password });
 
+  redirect("/data-upload");
   return NextResponse.json(
     {
       message: "authorized",

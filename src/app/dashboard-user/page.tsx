@@ -10,17 +10,17 @@ interface latestEvalProps {
   fileName: string;
 }
 
-function LatestEvals(current_value, file_name): JSX.Element {
+function LatestEvals(): JSX.Element {
   return (
     <>
       <CardHeader>
         Filename:
-        <span>{file_name}</span>
+        <span></span>
       </CardHeader>
       <CardContent>
         <h2 className="text-large text-bold text-muted-foreground font-dark">
           total mapLoad tokens:
-          <span>{current_value}</span>
+          <span></span>
         </h2>
       </CardContent>
     </>
