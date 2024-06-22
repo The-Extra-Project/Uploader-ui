@@ -4,7 +4,7 @@ import { db } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 /** fetches the current parametrers of the user file and the tokens */
-export async function GET(req: Request) {
+export async function GET() {
   const session = getServerSession(authOptions);
   if (!session) {
     return NextResponse.json(
@@ -14,21 +14,26 @@ export async function GET(req: Request) {
       },
     );
   }
-  const current_value = await db
+  const current_user_stats = await db
     .from("User")
-    .select("tokens_allotted")
+    .select("username, walletSupply")
     .eq("email", (await session).user.email);
-  const current_file = await db
+  
+    const current_file = await db
+    .from("User")
+    .select("FilesStorageArray")
+    .limit(1);
+
+    const all_files = await db
     .from("User")
     .select("file_stored")
-    .order("createdAt", { ascending: false })
-    .limit(1);
 
   return NextResponse.json(
     {
-      message: "Authorized",
-      current_value: current_value,
+      username: current_user_stats.data["username"],
+      current_value: current_user_stats.data["walletSupply"],
       current_file: current_file,
+      all_files: all_files
     },
     {
       status: 200,

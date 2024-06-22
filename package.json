@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "supabase:update-types": "npx supabase gen types typescript --project-id \"$PROJECT_REF\" > src/supabase_types.ts",
-    "supabase:seed": "npx ts-node ./src/seed_admin.ts",
+    "supabase:seed": " tsx ./src/seed_admin.ts",
     "start": "next start",
     "lint": "next lint",
     "prettier": "npx prettier --write ."
@@ -43,6 +43,7 @@
     "@tanstack/react-table": "^8.17.3",
     "@types/jsonwebtoken": "^9.0.6",
     "aws-sdk": "^2.1639.0",
+    "axios": "^1.7.2",
     "bcrypt": "^5.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",

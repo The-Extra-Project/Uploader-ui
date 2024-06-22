@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { supabase } from "@/lib/db";
-export async function login(formData: FormData) {
+export async function loginUser(formData: FormData) {
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
@@ -19,8 +19,8 @@ export async function login(formData: FormData) {
     redirect("/error");
   }
 
-  revalidatePath("/", "layout");
-  redirect("/account");
+  revalidatePath("/user/dashboard", "layout");
+  redirect("/user/dashboard");
 }
 
 export async function signup(formData: FormData) {
@@ -40,22 +40,4 @@ export async function signup(formData: FormData) {
 
   revalidatePath("/", "layout");
   redirect("/account");
-}
-
-export async function signIn(formData: FormData) {
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
-
-  const { error } = await supabase.auth.signInWithPassword(data);
-
-  if (error) {
-    redirect("/error");
-  }
-
-  revalidatePath("/data-upload", "page");
-  redirect("/data-upload");
 }

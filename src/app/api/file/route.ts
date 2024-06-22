@@ -10,8 +10,8 @@ import { env } from "@/env.mjs";
  * @param request  consisting of the file parameters (namely name and the file reference for the storage).
  *
  */
-
 export async function POST(request: Request) {
+  
   if (!env.S3_BUCKET_NAME) return new Response(null, { status: 500 });
   const { filename, contentType, error } = await request.json();
   if (error) {
@@ -42,4 +42,14 @@ export async function POST(request: Request) {
       message: e instanceof Error ? e.message : e?.toString(),
     });
   }
+}
+
+
+export async function GET(req: Request) {
+
+
+
+
+
+
 }

@@ -10,6 +10,8 @@ import { db } from "@/lib/db";
 import { signupAdmin, signup } from "@/app/api/user/register/actions";
 import { use } from "react";
 import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+
 // /user/register in order to create new account via the email /password
 
 export async function POST(req: NextRequest) {
@@ -26,7 +28,8 @@ export async function POST(req: NextRequest) {
   const { email, password, userCategory } = body;
 
   if (userCategory == "admin") {
-    //redirect("/admin/register")
+    // revalidatePath("/data-upload")
+    // redirect(`/data-upload`)
     const signupParams = {
       email: email,
       password: password,
@@ -48,8 +51,9 @@ export async function POST(req: NextRequest) {
   }
 
   await db.from("User").update({ email: email, password: password });
-
-  redirect("/data-upload");
+  
+  revalidatePath("/data-upload", "layout");
+  // redirect("/data-upload");
   return NextResponse.json(
     {
       message: "authorized",

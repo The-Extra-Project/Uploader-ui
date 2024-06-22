@@ -55,17 +55,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+
 import { CheckedState } from "@radix-ui/react-checkbox";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { Database } from "@/types_supabase";
+import { useToast } from "@/components/ui/use-toast";
 
 const tokenFormSchema = z.object({
   email: z.string().min(7).max(25),
   setTokens: z.number(),
 });
 
+
 function ContributionSelectionForm() {
+
   const setContributionForm = useForm<z.infer<typeof tokenFormSchema>>({
     resolver: zodResolver(tokenFormSchema),
     defaultValues: {
@@ -73,6 +77,24 @@ function ContributionSelectionForm() {
       setTokens: 10,
     },
   });
+
+const pushNewTokens = async()  => {
+  const {toast} = useToast();
+
+  const data = await fetch("/api/admin", {method: "POST"})
+  
+  if (!data) {
+
+    return toast({
+      title: "Error",
+      description: "the query didnt run due to issues." + data,
+
+    });
+  }
+  
+ 
+}
+
 
   // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof tokenFormSchema>) {
@@ -121,7 +143,7 @@ function ContributionSelectionForm() {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" onClick={pushNewTokens}>Submit</Button>
       </form>
     </Form>
   );

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { MouseEventHandler } from "react";
-
+import  {useEffect} from "react";
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ButtonShadcn";
 import Image from "next/image";
@@ -18,10 +18,16 @@ import { PasswordInput } from "@/components/password-input";
 import { env } from "@/env.mjs";
 import { Icons } from "@/components/Icons";
 
+import { createContext, useContext } from "react";
+
 import { signIn } from "next-auth/react";
 import React from "react";
 
 import { Input } from "@/components/ButtonShadcn";
+
+
+import { useRouter } from "next/navigation";
+import { headers } from "next/headers";
 
 const metadata = {
   title: "Creer Nouveau compte chez Extralabs",
@@ -39,8 +45,11 @@ export default function RegisterPage() {
   const [userCategory, setUserCategory] = React.useState<string>("");
   const [password, setPassword] = React.useState("");
   const [email, setEmail] = React.useState("");
-
+  // const [page, setPage] = 
   const { toast } = useToast();
+
+
+  const router = useRouter();
 
   const onSetpassword = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(event.target.value);
@@ -50,36 +59,45 @@ export default function RegisterPage() {
     setEmail(event.target.value);
   };
 
+
+
   const onSubmit = async () => {
-    let credentials: LoginForm = {
-      email: email,
-      password: password,
-    };
+
+
     setIsLoading(true);
 
     try {
-      // signup(credentials)
-      const call = fetch("/api/user/register", {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          method: "POST",
-        },
-
-        body: JSON.stringify({
-          email: email,
-          password: password,
-          userCategory: userCategory,
-        }),
-      });
-
-      toast({
-        title: "Check your email",
-        description:
-          "We sent you the confirmation of account activation, you will be logged in directly now.",
-      });
+      const params = {
+        email: email,
+        password: password,
+        userCategory: userCategory,
+      };
+      
+      
+    if(params.userCategory == "user")
+      {
+        router.push("/dashboard-user")
+        return toast({
+          title: "Loading user page.",
+          description: "Your sign in is successful, kindly go to personal page to validate account.",
+          variant: "default",
+        });
+        
+      }
+      else if(params.userCategory =="admin") 
+        {
+          router.push("/admin")
+          return toast({
+            title: "Loading admin page.",
+            description: "loading current listed requests",
+            variant: "default",
+          });
+          setIsLoading(false);
+        }
     } catch (error) {
       console.log(error);
+     
+     
       return toast({
         title: "Error",
         description: "not able to signup due to auth error.",
@@ -95,7 +113,7 @@ export default function RegisterPage() {
   return (
     <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
       <Link
-        href="/auth/login/"
+        href="/login/"
         className={cn(
           buttonVariants({ variant: "ghost" }),
           "absolute right-4 top-4 md:right-8 md:top-8",
@@ -151,9 +169,10 @@ export default function RegisterPage() {
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t" />
               </div>
+             
               <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-background px-2 text-muted-foreground">
-                  Or signez avec
+                  ou creer un compte
                 </span>
               </div>
             </div>

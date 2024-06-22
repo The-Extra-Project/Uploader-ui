@@ -22,6 +22,9 @@ import {
 
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/Label";
+import { ToastAction } from "@/components/ui/toast"
+
+import { useToast } from "@/components/ui/use-toast";
 
 type UploaderProp = {
   value: File[] | null;
@@ -34,48 +37,57 @@ export default function UploadPage() {
   const [s3uploading, setS3Uploading] = useState(false);
   const [files, setFiles] = useState<File[] | null>(null);
   const [fields, setFields] = useState<any>(null);
+
+  let {toast} = useToast()
+
+  
   const uploadFile = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setS3Uploading(true);
-    if (!files) {
-      alert("Please select a file to upload.");
-      return;
-    }
+
     files.forEach(async (file) => {
-      // const response = await fetch("/api/file", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({ filename: file.name, contentType: file.type }),
-      // });
+      const response = await fetch(`/api/file/`, {method: "POST" ,
+  
+        headers: {
+          'Content-Type': 'application/json',
+          'API-Key': process.env.DATA_API_KEY!,
+        },    
+      body: JSON.stringify({ filename: file.name, contentType: file.type })
 
-      // if (response.ok) {
-      //   const { url, fields } = await response.json();
+      }
+      );
 
-      //   const formData = new FormData();
+      if (response.ok) {
+        const { url, fields } = await response.json();
 
-      //   Object.entries(fields).forEach(([key, value]) => {
-      //     formData.append(key, value as string);
-      //   });
-      //   formData.append("file", file);
+        const formData = new FormData();
 
-      //   const uploadResponse = await fetch(url, {
-      //     method: "POST",
-      //     body: formData,
-      //   });
+        try {
+        Object.entries(fields).forEach(([key, value]) => {
+          formData.append(key, value as string);
+        });
+        formData.append("file", file);
+        }
+        catch(error) {
+          console.log("in the /page_upload" + error)
+        }
+        const uploadResponse = await fetch(url, {
+          method: "POST",
+          body: formData,
+        });
 
-      //   if (uploadResponse.ok) {
-      //     alert("Upload successful!");
-      //   } else {
-      //     console.error("S3 Upload Error:", uploadResponse);
-      //     alert("Upload failed.");
-      //   }
-      // } else {
-      //   alert("Failed to get pre-signed URL.");
-      // }
+
+        if (uploadResponse.ok) {
+          alert("Upload successful!");
+        } else {
+          console.error("S3 Upload Error:", uploadResponse);
+          alert("Upload failed.");
+        }
+    }
 
       const { url, fields } = await uploadS3Files(file.name);
+      if(url)
+      
+      
       setFields(fields);
       setS3Uploading(false);
     });
@@ -137,6 +149,15 @@ export default function UploadPage() {
             size="lg"
             type="submit"
             disabled={!files || files.length === 0}
+            onClick={() => {
+              toast({
+                title: "loading the  S3 file",
+                description: "with the following S3 link",
+                action: (
+                  <ToastAction altText="demo" onClick={uploadFile}>final</ToastAction>
+                ),
+              })
+            }}
             onSubmit={uploadFile}
           >
             Upload

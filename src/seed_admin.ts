@@ -1,4 +1,5 @@
-import { supabase as db } from "src/lib/db";
+"use server"
+import {  db } from "src/lib/db";
 import { Database } from "src/types_supabase";
 
 const IncludeDummyData: Database["public"]["Tables"]["admin"]["Row"][] = [
@@ -44,10 +45,25 @@ const IncludeDummyData: Database["public"]["Tables"]["admin"]["Row"][] = [
 
 async function main() {
   console.log("creating the database  with the user");
+    try {
+    IncludeDummyData.forEach((iter) => {
+      db.auth.admin.createUser({
+        email:"malikdhruv1994@gmail.com"
+      }).then(() => {
 
-  const user = db.from("admin").insert(IncludeDummyData);
-  console.log(`added the parameters and did seeding: ${(await user).data}`);
+        const insertQuery =  db.from("admin").insert(iter);
+      console.log(`added the parameters  seeding:` + insertQuery["user"]);
+      })
+
+      
+    } );
+  }
+  catch(error)
+  {
+    console.error(error)
+  }
 }
+
 
 main()
   .then(async () => {

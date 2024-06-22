@@ -1,8 +1,9 @@
 import * as z from "zod";
 
 export const userAuthSchema = z.object({
-  email: z.string().email(),
-  password: z.string().min(8),
+  email: z.string(),
+  password: z.string(),
+  userCategory: z.string()
 });
 
 export const userNameSchema = z.object({

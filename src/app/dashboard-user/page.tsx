@@ -2,53 +2,60 @@
 
 import HeaderApplication from "@/components/HeaderApplication";
 import { Metadata } from "next";
-import { Tabs, TabsContent, TabsList } from "@/components/ui/tabs";
+import { Button } from "@/components/ButtonShadcn";
+import { Tabs } from "@/components/ui/tabs";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/Card";
+import {LatestEvals} from "@/components/userStats"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 // integrate the API endpoint for setting up the database at the backend
 interface latestEvalProps {
-  currentValue: string;
-  fileName: string;
+  userName: string
+  currentValue: string
+  lastFile: string
+  filesName: string[]
 }
 
-function LatestEvals(): JSX.Element {
-  return (
-    <>
-      <CardHeader>
-        Filename:
-        <span></span>
-      </CardHeader>
-      <CardContent>
-        <h2 className="text-large text-bold text-muted-foreground font-dark">
-          total mapLoad tokens:
-          <span></span>
-        </h2>
-      </CardContent>
-    </>
-  );
-}
-
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/Card";
-
-//import {useWalletAuth, ConnectWallet} from "@/components/abstractWalletOps"
-import { Button } from "@/components/ButtonShadcn";
-
-const getCurrentValue = (current_value): JSX.Element => {
-  return <div> {current_value} </div>;
-};
-
-const getLastUploadedFile: React.FC<string> = (
-  lastFileUpdated,
-): JSX.Element => {
-  return <div> {lastFileUpdated} </div>;
-};
-
-// TODO: define the current descriptions of the mapload token values
 export default function UserDashboard() {
-  // const { isConnecting, isConnected, connect, connectionStatus, wallet } =
-  //   useWalletAuth();
+  const router = useRouter()
+
+  const [latestEval, setLatestEval] = useState<latestEvalProps>({
+    userName: "",
+    currentValue: "",
+    lastFile: "",
+    filesName: [],
+  });
+
+  useEffect(() => {
+    setUserStats();
+  }, []) 
+  const setUserStats = async () => {
+    const request = await fetch("/api/user/dashboard")
+    try {
+      if (request)
+        {
+          setLatestEval({
+            userName: request.json()["username"],
+            currentValue: request.json()["current_value"],
+            lastFile: request.json()["current_file"],
+            filesName: request.json()["all_files"]
+          })
+        }
+    }
+    catch(error)
+    {
+      console.error("err in setting user statistics: not a correct param")
+    }
+    // create API for uploading the file data
+    
+  }
   return (
     <>
       <HeaderApplication />
+    <div className="flex items-center justify-between space-y-2">
+    <h2 className="text-2xl font-bold text-black">Hi {latestEval.userName}, Your Dashboard</h2>
+    </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Tabs defaultValue="overview" className="space-y-4">
           <Card>
@@ -57,7 +64,7 @@ export default function UserDashboard() {
                 Total tokens received
               </CardTitle>
             </CardHeader>
-            <CardContent>1000 Mapload</CardContent>
+            <CardContent>  {latestEval.currentValue} Mapload</CardContent>
           </Card>
 
           <Card>
@@ -66,7 +73,7 @@ export default function UserDashboard() {
                 Files Uploaded
               </CardTitle>
             </CardHeader>
-            <CardContent>10</CardContent>
+            <CardContent>{latestEval.filesName}</CardContent>
           </Card>
         </Tabs>
 
@@ -75,16 +82,23 @@ export default function UserDashboard() {
             <CardHeader>
               <CardTitle>Your recent uploads</CardTitle>
             </CardHeader>
-            <CardContent></CardContent>
+            <CardContent>
+              {latestEval.filesName}
+            </CardContent>
           </Card>
           <Card>
             <CardTitle>Connecting to the wallet account</CardTitle>
-
             <CardContent>
               <Button>Connect wallet account</Button>
             </CardContent>
           </Card>
         </Tabs>
+        <Card>
+        <CardTitle>  Uploading the dataset for evaluation </CardTitle>
+        <CardContent className="flex-center">
+              <Button onClick={() => router.push("/data-upload")}>Upload file </Button>
+            </CardContent>
+        </Card>
       </div>
     </>
   );

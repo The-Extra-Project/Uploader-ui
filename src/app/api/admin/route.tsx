@@ -11,7 +11,7 @@ interface AnalystProps {
   email: string;
 }
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   const session = getServerSession(authOptions);
   if (!session) {
     return NextResponse.json(
@@ -21,7 +21,6 @@ export async function GET(req: NextRequest) {
       },
     );
   }
-  const { useremail } = await req.json();
 
   try {
     let notPaid = db.from("admin").select().contains("status", ["pending"]);
@@ -42,4 +41,33 @@ export async function GET(req: NextRequest) {
       },
     );
   }
+}
+
+
+export async function POST(req: NextRequest) {
+  
+  const data = await req.json() 
+  const session = getServerSession(authOptions);
+  if (!session) {
+    return NextResponse.json(
+      { message: "Unauthorized" },
+      {
+        status: 401,
+      },
+    );
+  }
+  try {
+
+    await db.from("admin").update(
+      {tokens_allotted: data.tokens}
+    ).eq("email",data.email)
+  }
+  catch(error) {
+console.error("error in calling /api/admin update" + error)
+  }
+
+
+
+
+
 }

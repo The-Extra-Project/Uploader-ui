@@ -7,10 +7,6 @@ declare global {
   var cachedDBClient: SupabaseClient;
 }
 
-configDotenv({
-  path: "../../.env",
-});
-
 export const supabase = createClient<Database>(
   env.NEXT_PUBLIC_SUPABASE_URL || "",
   env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "",

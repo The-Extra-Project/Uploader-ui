@@ -14,27 +14,29 @@ import { Avatar, AvatarFallback } from "@/components/avatarImage";
 import extra from "@/app/public/extra_logo.png";
 import { ArrowDownward } from "@mui/icons-material";
 import { supabase } from "@/lib/db";
+import logoutComponent from "@/components/logoutComponent";
 
-let responseUsername;
+
+export default function HeaderApplication() {
+  const [userDetails, setUserDetails] = useState("");
+
+  let responseUsername;
 
 const getUserName = async () => {
   try {
     const userId = (await supabase.auth.getUser()).data.user.email;
 
-    responseUsername = await fetch(`/api/user/username?userId=${userId}`);
+    responseUsername = await fetch(`/api/header/username/`);
   } catch (error) {
     console.log(error);
   }
 
   if (responseUsername) {
     const data = await responseUsername.json();
-    console.log(data["username"]);
+    console.log(data || "DhruvMalik");
     return data;
   }
 };
-
-export default function HeaderApplication() {
-  const [userDetails, setUserDetails] = useState("");
 
   useEffect(() => {
     const fetchParams = async () => {
@@ -73,7 +75,7 @@ export default function HeaderApplication() {
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
-            <Link href="/logout">Logout</Link>
+            <Link href="/logout" onClick={logoutComponent}>Logout</Link>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
