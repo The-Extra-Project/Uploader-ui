@@ -14,6 +14,7 @@ jobs:
         uses: koyeb-community/install-koyeb-cli@v2
         with:
           api_token: "${{ secrets.KOYEB_APP_DEPLOYMENT }}"
+
       - name: Build and deploy the application
         uses: koyeb/action-git-deploy@v1
         with:
@@ -21,4 +22,7 @@ jobs:
           service-env: PORT=3000
           service-ports: 3000:http
           service-routes: /:3000
+          git-builder: docker
+          git-docker-dockerfile: Dockerfile.koyeb
+          privileged: true
           skip-cache: true
