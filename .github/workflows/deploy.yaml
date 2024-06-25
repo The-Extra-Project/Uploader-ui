@@ -26,3 +26,4 @@ jobs:
           git-docker-dockerfile: Dockerfile.koyeb
           privileged: true
           skip-cache: true
+          service-instance-type: "small"
