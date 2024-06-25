@@ -15,8 +15,6 @@ import extra from "@/app/public/extra_logo.png";
 import { ArrowDownward } from "@mui/icons-material";
 import { supabase } from "@/lib/db";
 import logoutComponent from "@/components/logoutComponent";
-
-
 export default function HeaderApplication() {
   const [userDetails, setUserDetails] = useState("");
 
@@ -52,7 +50,7 @@ const getUserName = async () => {
         <Link href={"/"}>Uploader</Link>
       </span>
 
-      <Image src={idf} height={100} width={100} alt="IDF"></Image>
+      <Image src={idf} height={100} width={100} alt="IDF"/>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" className="flex items-center gap-2 lm ">
@@ -61,17 +59,17 @@ const getUserName = async () => {
               <AvatarFallback>DM</AvatarFallback>
             </Avatar>
             <span className="text-sm font-medium text-black">
-              {userDetails}
+              {userDetails || "demoClient"} 
             </span>
             <ArrowDownward />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="text-black">
           <DropdownMenuItem>
-            <Link href="/app/dashboard-user">Profile</Link>
+            <Link href="/dashboard-user">Profile</Link>
           </DropdownMenuItem>
           <DropdownMenuItem>
-            <Link href="/app/settings"> Settings </Link>
+            <Link href="/settings"> Settings </Link>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
