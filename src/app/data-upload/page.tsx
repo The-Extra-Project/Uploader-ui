@@ -11,7 +11,7 @@ import { uploadS3Files } from "@/app/api/file/upload";
 //import {uploadFileS3, uploadWeb3File} from "@/api/file/upload"
 import HeaderApplication from "@/components/HeaderApplication";
 import { Paperclip } from "lucide-react";
-
+import { db } from "@/lib/db";
 import {
   FileUploader,
   FileUploaderContent,
@@ -20,11 +20,15 @@ import {
   FileInput,
 } from "@/components/DropzoneFile";
 
+import {useDropzone, FileWithPath} from 'react-dropzone';
+
+
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/Label";
 import { ToastAction } from "@/components/ui/toast"
 
 import { useToast } from "@/components/ui/use-toast";
+
 
 type UploaderProp = {
   value: File[] | null;
@@ -33,62 +37,86 @@ type UploaderProp = {
   orientation?: "horizontal" | "vertical";
 };
 
+
 export default function UploadPage() {
   const [s3uploading, setS3Uploading] = useState(false);
   const [files, setFiles] = useState<File[] | null>(null);
   const [fields, setFields] = useState<any>(null);
-
+  const [signedUrls, setSignedUrl] = useState<string[]>([]);
+  
   let {toast} = useToast()
 
   
+
+function Dropzone(props) {
+  const {getRootProps, getInputProps, open, acceptedFiles } = useDropzone({
+    // Disable click and keydown behavior
+    noClick: true,
+    noKeyboard: true
+  });
+
+   let filePaths: FileWithPath[] = acceptedFiles
+
+  const files = filePaths.map(file => (
+    <li key={file.path}>
+      {file.path} - {file.size} bytes
+    </li>
+  ));
+
+  return (
+    <div className="container">
+      <div {...getRootProps({className: 'dropzone'})}>
+        <input {...getInputProps()} />
+        <p>Drag 'n' drop some files here</p>
+        <button type="button" onClick={open}>
+          Open File Dialog
+        </button>
+      </div>
+      <aside>
+        <h4>Files</h4>
+        <ul>{files}</ul>
+      </aside>
+    </div>
+  );
+}
   const uploadFile = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    files.forEach(async (file) => {
+    files.forEach(async (file) => 
+      {
       const response = await fetch(`/api/file/`, {method: "POST" ,
   
         headers: {
           'Content-Type': 'application/json',
           'API-Key': process.env.DATA_API_KEY!,
         },    
-      body: JSON.stringify({ filename: file.name, contentType: file.type })
-
+      body: JSON.stringify({ filename: file.name, filepath: file.webkitRelativePath })
       }
       );
 
       if (response.ok) {
-        const { url, fields } = await response.json();
+        const { url, signedURL } = await response.json();
+        signedUrls.push(signedURL)
 
         const formData = new FormData();
 
-        try {
-        Object.entries(fields).forEach(([key, value]) => {
-          formData.append(key, value as string);
-        });
         formData.append("file", file);
-        }
-        catch(error) {
-          console.log("in the /page_upload" + error)
-        }
-        const uploadResponse = await fetch(url, {
-          method: "POST",
-          body: formData,
-        });
+        formData.append("url", url);
+        formData.append("path", file.webkitRelativePath);
+        
+        const uploadResponse = db.storage.from("uploader_ui").uploadToSignedUrl(file.webkitRelativePath,signedURL, file );
 
-
-        if (uploadResponse.ok) {
+        if ((await uploadResponse).data) {
           alert("Upload successful!");
         } else {
-          console.error("S3 Upload Error:", uploadResponse);
+          console.error("Upload Error:", uploadResponse);
           alert("Upload failed.");
         }
     }
 
-      const { url, fields } = await uploadS3Files(file.name);
-      if(url)
+      //const { url, fields } = await uploadS3Files(file.name); 
       
-      
-      setFields(fields);
+      //setFields(fields);
       setS3Uploading(false);
     });
   };
@@ -151,8 +179,8 @@ export default function UploadPage() {
             disabled={!files || files.length === 0}
             onClick={() => {
               toast({
-                title: "loading the  S3 file",
-                description: "with the following S3 link",
+                title: "loading the reference file in supabase",
+                description: "with the following signedLink" + signedUrls  ,
                 action: (
                   <ToastAction altText="demo" onClick={uploadFile}>final</ToastAction>
                 ),

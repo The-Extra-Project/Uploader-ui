@@ -1,8 +1,6 @@
-
-
 "use client";
 import {  Input } from "@/components/ui/input";
-
+import { db } from "@/lib/db";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -24,8 +22,6 @@ import "@/app/styles/global.css";
 //   title: "Login",
 //   description: "Login to your account",
 // };
-
-
 
 export default function LoginPage() {
   
@@ -76,6 +72,28 @@ const {
   };
 
 
+  async function signInRouter(pageUrl) {
+
+    const {data, error} = await db.auth.signInWithPassword({email: formData.email, password: formData.password})
+    if(data)
+{
+    router.push(pageUrl)
+    return toast({
+      title: "Loading user page.",
+      description: "Your sign in is successful, kindly go to personal page to validate account.",
+      variant: "default",
+    }); }
+    else
+    {
+      return toast({
+        title: "Sign in failed.",
+        description: "Your sign in is not successful, kindly check your credentials and try again.",
+        variant: "destructive",
+      });
+    }
+
+    setIsLoading(false);
+  }
 
   async function onSubmit() {
     setIsLoading(true);
@@ -83,23 +101,12 @@ const {
 
     if(formData.userCategory == "user")
       {
-        router.push("/dashboard-user")
-        return toast({
-          title: "Loading user page.",
-          description: "Your sign in is successful, kindly go to personal page to validate account.",
-          variant: "default",
-        });
+       await signInRouter("/dashboard-user")
         
       }
       else if(formData.userCategory =="admin") 
         {
-          router.push("/admin")
-          return toast({
-            title: "Loading admin page.",
-            description: "loading current listed requests",
-            variant: "default",
-          });
-          setIsLoading(false);
+         await signInRouter("/admin")
         }
 
         else {
@@ -108,8 +115,6 @@ const {
             description: "not able to call backend and auth, try later",
             variant: "destructive",
           });
-          setIsLoading(false);
-
         }
     setIsLoading(false);
   }
@@ -142,7 +147,7 @@ const {
         <div className="grid gap-2">
           <div className="grid gap-1">
             <div>
-            <RadioGroup defaultValue="user" id="userCategory" onValueChange={setCategory}>
+            <RadioGroup defaultValue="user" id="userCategory" onChange={handleInputChangeUserCategory}>
                 <div className="flex items-center text-small space-x-2">
                   <RadioGroupItem value="user" id="user" />
                   <Label htmlFor="user"> User Account</Label>

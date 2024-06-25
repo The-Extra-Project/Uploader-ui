@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { MouseEventHandler } from "react";
 import  {useEffect} from "react";
+
+
 import { cn } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ButtonShadcn";
 import Image from "next/image";
@@ -28,6 +30,7 @@ import { Input } from "@/components/ButtonShadcn";
 
 import { useRouter } from "next/navigation";
 import { headers } from "next/headers";
+import { db } from "@/lib/db";
 
 const metadata = {
   title: "Creer Nouveau compte chez Extralabs",
@@ -60,10 +63,22 @@ export default function RegisterPage() {
   };
 
 
+  const saveUserToDB = async (params: { email: string; password: string; userCategory: string }) => {
+    try {
+      await db.auth.updateUser({
+        data: {
+          email: params.email,
+          password: params.password,
+          userCategory: params.userCategory,
+        },
+      });
+    } catch (error) {
+      console.error("Error saving user to the database:", error);
+      throw error;
+    }
+  };
 
   const onSubmit = async () => {
-
-
     setIsLoading(true);
 
     try {
@@ -72,11 +87,13 @@ export default function RegisterPage() {
         password: password,
         userCategory: userCategory,
       };
-      
-      
+
+      saveUserToDB(params);
+  
     if(params.userCategory == "user")
       {
         router.push("/dashboard-user")
+       
         return toast({
           title: "Loading user page.",
           description: "Your sign in is successful, kindly go to personal page to validate account.",

@@ -1,8 +1,9 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/Card"
-import { Button } from "./ButtonShadcn"
+import { Button } from "@/components/ButtonShadcn"
 
 export default function logoutComponent() {
-    return(
+  
+  return(
         <Card>
         <CardHeader className="pb-0">
           <CardTitle className="text-xl">Confirme </CardTitle>
@@ -17,8 +18,6 @@ export default function logoutComponent() {
           </div>
         </CardContent>
       </Card>
-  
-        
     )
 
 

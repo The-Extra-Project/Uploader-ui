@@ -65,9 +65,9 @@ export default function Home() {
             entreprises et les citoyens qui partagent des données.
             <br />
             Découvre-en plus
-            <tr />
+            <br/>
             <Link
-              className="text-black-100"
+              className="text-red-900"
               href="https://www.extralabs.xyz/terms-of-use-extra-uploader"
             >
               ici

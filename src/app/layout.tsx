@@ -19,10 +19,6 @@ const inter = Inter({
   variable: "--font-sans",
 });
 
-interface RootLayoutProps {
-  children: React.ReactNode;
-}
-
 export const metadata = {
   title: { default: siteConfig.name, template: `%s | ${siteConfig.name}` },
   description: siteConfig.description,
